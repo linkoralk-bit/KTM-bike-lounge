@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-// const API = 'http://127.0.0.1:5000/api/admin';
-const API = 'https://weddingplatformbackend.onrender.com/api/admin';
+const API = 'http://127.0.0.1:5000/api/admin';
+// const API = 'https://weddingplatformbackend.onrender.com/api/admin';
 
 @Injectable({ providedIn: 'root' })
 export class AdminService {

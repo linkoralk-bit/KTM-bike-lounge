@@ -6,6 +6,8 @@ import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ApiService } from '../../services/api.service';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { FormsModule } from '@angular/forms';
+import { MemoryService } from '../../services/memory.service';
 
 interface Heart {
   id: number;
@@ -20,7 +22,10 @@ interface Heart {
 @Component({
   selector: 'app-event',
   standalone: true,
-  imports: [CommonModule],
+  imports: [
+  CommonModule,
+  FormsModule
+],
   templateUrl: './event.component.html',
   styleUrls: ['./event.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -32,14 +37,15 @@ export class EventComponent implements OnInit, OnDestroy, AfterViewInit {
   isPlaying = false;
   rsvpSubmitted = false;
   private isOpening = false;
+
   // Hero typewriter
   displayGroom = '';
   displayBride = '';
   private typeIntervals: any[] = [];
-  private typeTimeouts:  any[] = [];
+  private typeTimeouts: any[] = [];
 
   // Countdown
-  countdown = { days: 0, hours: 0, minutes: 0, seconds: 0 };
+  countdown     = { days: 0, hours: 0, minutes: 0, seconds: 0 };
   prevCountdown = { days: 0, hours: 0, minutes: 0, seconds: 0 };
   private timerInterval: any;
 
@@ -48,43 +54,52 @@ export class EventComponent implements OnInit, OnDestroy, AfterViewInit {
   activeBgIndex = 0;
   private bgInterval: any;
 
-  // Dust mote particles
+  // Floating petal particles (reuses Heart interface, renamed semantically)
   hearts: Heart[] = [];
   private heartIdCounter = 0;
   private heartSpawnInterval: any;
 
-  // Gallery slideshow
+  // Gallery
   galleryIndex = 0;
   private galleryAutoInterval: any;
 
   // Lightbox
-  showLightbox = false;
-  currentIndex = 0;
-  currentImage = '';
+  showLightbox  = false;
+  currentIndex  = 0;
+  currentImage  = '';
 
   // Template loops
   readonly filmHoles = Array(8).fill(0);
-
-  // Unused interface compat
   readonly HEART_PATH = '';
 
-  // Warm dust / golden mote colours
+  // Romantic rose & gold heart colours
   readonly HEART_COLORS = [
-    '#c8a848', // amber gold
-    '#e0b060', // warm gold
-    '#d09840', // deep amber
-    '#c89060', // terracotta warm
-    '#b8a070', // sepia warm
-    '#d4b858', // sunlight
+    '#c86464', // soft rose red
+    '#b8942a', // liquid gold
+    '#d48080', // blush rose
+    '#c84858', // deep rose
+    '#d4b84c', // champagne gold
+    '#be6e6e', // dusty rose
   ];
 
-  
+  memories: any[] = [];
+
+guestName = '';
+memoryMessage = '';
+
+selectedMemoryFile: any;
+
+memoryUploading = false;
+
+// backendUrl = 'http://127.0.0.1:5000';
+
   constructor(
     private route:     ActivatedRoute,
     private api:       ApiService,
     private sanitizer: DomSanitizer,
     private cdr:       ChangeDetectorRef,
-    private ngZone:    NgZone
+    private ngZone:    NgZone,
+    private memoryService: MemoryService,
   ) {}
 
   ngOnInit() {
@@ -94,12 +109,12 @@ export class EventComponent implements OnInit, OnDestroy, AfterViewInit {
     const slug = this.route.snapshot.paramMap.get('slug');
     this.api.getEvent(slug!).subscribe(res => {
       this.event = res;
-
+      this.loadMemories();
       this.mapUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
         `https://maps.google.com/maps?q=${encodeURIComponent(res.location)}&output=embed`
       );
 
-      if (res.gallery?.length >= 2) {
+      if (res.gallery?.length >= 1) {
         this.bgSlides = res.gallery.slice(0, 5);
       } else {
         this.bgSlides = [
@@ -121,7 +136,7 @@ export class EventComponent implements OnInit, OnDestroy, AfterViewInit {
     setTimeout(() => this.initScrollObserver(), 800);
   }
 
-  // ── GATE OPEN ANIMATION ───────────────────────────────────
+  // ── SCROLL OPEN ANIMATION ────────────────────────────────
   openEnvelope(audio: HTMLAudioElement) {
     if (!this.isPlaying) {
   audio.play().then(() => {
@@ -129,39 +144,32 @@ export class EventComponent implements OnInit, OnDestroy, AfterViewInit {
     this.cdr.detectChanges();
   }).catch(() => {});
 }
-
-    const wrap    = document.getElementById('envelopeWrap');
-    const hint    = document.getElementById('wsHint');
+    const wrap     = document.getElementById('envelopeWrap');
+    const hint     = document.getElementById('wsHint');
     const letterEl = document.getElementById('letterReveal');
     const sceneEl  = document.getElementById('envelopeScene');
     const burnEl   = document.getElementById('filmBurn');
-    const coverEl  = document.getElementById('bookCover');
-    const rightDoor = document.getElementById('bookCoverRight');
 
-    if (!coverEl || !rightDoor) return;
-
+    // if (!wrap || wrap.classList.contains('scroll-opened')) return;
     if (!wrap || this.isOpening) return;
 
 this.isOpening = true;
 
-    // Hide hint immediately
+    // Mark as opened immediately to prevent double-tap
+    wrap.classList.add('scroll-opened');
+
+    // Step 1: Hide hint
     if (hint) hint.style.opacity = '0';
 
-    // Step 1: latch jiggles (seal-cracked class)
-    wrap.classList.add('seal-cracked');
+    // Step 2: Animate scroll unrolling — scale the scroll-body taller
+    wrap.classList.add('scroll-unrolling');
 
-    // Step 2: gate swings open on CSS 3D hinge
-    setTimeout(() => {
-      if (coverEl) coverEl.classList.add('flap-open');
-      if (rightDoor) rightDoor.classList.add('flap-open');
-    }, 350);
-
-    // Step 3: film burn transition fires
+    // Step 3: Fire the burn/flash transition
     setTimeout(() => {
       if (burnEl) burnEl.classList.add('burning');
-    }, 900);
+    }, 600);
 
-    // Step 4: during peak burn, swap scenes
+    // Step 4: At peak burn, swap scenes
     setTimeout(() => {
       if (sceneEl) {
         sceneEl.style.transition = 'opacity 0.4s ease';
@@ -181,18 +189,18 @@ this.isOpening = true;
 
         setTimeout(() => this.initScrollObserver(), 1400);
       }
-    }, 1250);
+    }, 1050);
 
-    // Step 5: remove scene from flow after burn ends
+    // Step 5: Clean up after transition
     setTimeout(() => {
-      if (sceneEl) sceneEl.style.display = 'none';
-      if (burnEl)  burnEl.classList.remove('burning');
-    }, 2200);
+      if (sceneEl)  sceneEl.style.display = 'none';
+      if (burnEl)   burnEl.classList.remove('burning');
+    }, 2000);
 
     this.cdr.detectChanges();
   }
 
-  // ── BACKGROUND SLIDESHOW ─────────────────────────────────
+  // ── BACKGROUND SLIDESHOW ────────────────────────────────
   startBgSlideshow() {
     this.bgInterval = setInterval(() => {
       this.activeBgIndex = (this.activeBgIndex + 1) % this.bgSlides.length;
@@ -204,9 +212,9 @@ this.isOpening = true;
     return i === this.activeBgIndex;
   }
 
-  // ── GALLERY ──────────────────────────────────────────────
+  // ── GALLERY ─────────────────────────────────────────────
   get galleryImages(): string[] { return this.event?.gallery || []; }
-  get galleryDots(): number[]   { return this.galleryImages.map((_, i) => i); }
+  get galleryDots():   number[] { return this.galleryImages.map((_, i) => i); }
 
   goToSlide(n: number) {
     this.galleryIndex = (n + this.galleryImages.length) % this.galleryImages.length;
@@ -231,7 +239,7 @@ this.isOpening = true;
     this.startGalleryAuto();
   }
 
-  // ── DUST MOTES ────────────────────────────────────────────
+  // ── FLOATING PETALS ─────────────────────────────────────
   spawnInitialHearts() {
     for (let i = 0; i < 20; i++) {
       setTimeout(() => this.spawnHeart(), i * 400);
@@ -254,11 +262,11 @@ this.isOpening = true;
     const heart: Heart = {
       id,
       x:        Math.random() * 100,
-      size:     Math.random() * 16 + 6,
-      delay:    Math.random() * 6,
+      size:     Math.random() * 14 + 17,
+      delay:    Math.random() * 8,
       duration: Math.random() * 14 + 12,
       colorIdx: Math.floor(Math.random() * this.HEART_COLORS.length),
-      opacity:  0.2 + Math.random() * 0.45,
+      opacity:  0.15 + Math.random() * 0.35,
     };
     this.hearts.push(heart);
     setTimeout(() => {
@@ -273,34 +281,7 @@ this.isOpening = true;
 
   trackHeart(_: number, h: Heart): number { return h.id; }
 
-  // ── TYPEWRITER ────────────────────────────────────────────
-  // animateNames() {
-  //   const groom = this.event?.groom || '';
-  //   const bride = this.event?.bride || '';
-  //   let i = 0;
-
-  //   const gi = setInterval(() => {
-  //     if (i < groom.length) {
-  //       this.displayGroom += groom[i++];
-  //       this.cdr.detectChanges();
-  //     } else {
-  //       clearInterval(gi);
-  //       const t = setTimeout(() => {
-  //         let j = 0;
-  //         const bi = setInterval(() => {
-  //           if (j < bride.length) {
-  //             this.displayBride += bride[j++];
-  //             this.cdr.detectChanges();
-  //           } else { clearInterval(bi); }
-  //         }, 90);
-  //         this.typeIntervals.push(bi);
-  //       }, 400);
-  //       this.typeTimeouts.push(t);
-  //     }
-  //   }, 90);
-  //   this.typeIntervals.push(gi);
-  // }
-
+  // ── TYPEWRITER ──────────────────────────────────────────
   animateNames() {
   // prevent duplicate typing
   this.typeIntervals.forEach(clearInterval);
@@ -349,9 +330,9 @@ this.isOpening = true;
   this.typeIntervals.push(gi);
 }
 
-  // ── COUNTDOWN ─────────────────────────────────────────────
+  // ── COUNTDOWN ───────────────────────────────────────────
   startCountdown() {
-    const target = new Date(this.event.date + 'T16:00:00');
+    const target = new Date(this.event.date + 'T09:00:00');
     const run = () => {
       const diff = target.getTime() - Date.now();
       if (diff > 0) {
@@ -382,7 +363,7 @@ this.isOpening = true;
   tickMinutes(): boolean { return this.countdown.minutes !== this.prevCountdown.minutes; }
   tickSeconds(): boolean { return this.countdown.seconds !== this.prevCountdown.seconds; }
 
-  // ── SCROLL OBSERVER ───────────────────────────────────────
+  // ── SCROLL OBSERVER ─────────────────────────────────────
   initScrollObserver() {
     const io = new IntersectionObserver(
       entries => entries.forEach(e => {
@@ -396,7 +377,7 @@ this.isOpening = true;
     document.querySelectorAll('.fade-up').forEach(el => io.observe(el));
   }
 
-  // ── LIGHTBOX ──────────────────────────────────────────────
+  // ── LIGHTBOX ────────────────────────────────────────────
   openLightbox(index: number) {
     this.currentIndex = index;
     this.currentImage = this.event.gallery[index];
@@ -425,7 +406,7 @@ this.isOpening = true;
     this.cdr.detectChanges();
   }
 
-  // ── MUSIC ─────────────────────────────────────────────────
+  // ── MUSIC ────────────────────────────────────────────────
   async toggleMusic(audio: HTMLAudioElement) {
     try {
       if (this.isPlaying) { audio.pause(); }
@@ -435,7 +416,7 @@ this.isOpening = true;
     } catch (e) { console.warn(e); }
   }
 
-  // ── RSVP ──────────────────────────────────────────────────
+  // ── RSVP ─────────────────────────────────────────────────
   submitRsvp(e: Event) {
     e.preventDefault();
     const form = e.target as HTMLFormElement;
@@ -452,7 +433,97 @@ this.isOpening = true;
     });
   }
 
-  // ── CLEANUP ───────────────────────────────────────────────
+  loadMemories() {
+
+  if (!this.event?._id) return;
+
+  this.memoryService
+    .getMemories(this.event._id)
+    .subscribe((res: any) => {
+
+      this.memories = res;
+      this.cdr.detectChanges();
+
+    });
+
+}
+
+
+onMemoryFileChange(event: any) {
+
+  this.selectedMemoryFile =
+    event.target.files[0];
+
+}
+
+
+uploadMemory() {
+
+  if (!this.selectedMemoryFile) {
+    alert('Please select an image');
+    return;
+  }
+
+  if (!this.guestName) {
+    alert('Please enter your name');
+    return;
+  }
+
+  this.memoryUploading = true;
+
+  const formData = new FormData();
+
+  formData.append(
+    'eventId',
+    this.event._id
+  );
+
+  formData.append(
+    'guestName',
+    this.guestName
+  );
+
+  formData.append(
+    'message',
+    this.memoryMessage
+  );
+
+  formData.append(
+    'image',
+    this.selectedMemoryFile
+  );
+
+  this.memoryService
+    .uploadMemory(formData)
+    .subscribe({
+
+      next: () => {
+
+        this.memoryUploading = false;
+
+        this.guestName = '';
+        this.memoryMessage = '';
+        this.selectedMemoryFile = null;
+
+        alert('Memory shared successfully ❤️');
+
+        this.loadMemories();
+
+      },
+
+      error: () => {
+
+        this.memoryUploading = false;
+
+        alert('Upload failed');
+
+      }
+
+    });
+
+}
+
+  // ── CLEANUP ──────────────────────────────────────────────
   ngOnDestroy() {
     clearInterval(this.timerInterval);
     clearInterval(this.bgInterval);
@@ -460,5 +531,17 @@ this.isOpening = true;
     clearInterval(this.galleryAutoInterval);
     this.typeIntervals.forEach(clearInterval);
     this.typeTimeouts.forEach(clearTimeout);
+  }
+  // ── DATE HELPER ───────────────────────────────────────────
+  getDaySuffix(): string {
+    if (!this.event?.date) return '';
+    const day = new Date(this.event.date).getDate();
+    if (day >= 11 && day <= 13) return 'th';
+    switch (day % 10) {
+      case 1:  return 'st';
+      case 2:  return 'nd';
+      case 3:  return 'rd';
+      default: return 'th';
+    }
   }
 }
