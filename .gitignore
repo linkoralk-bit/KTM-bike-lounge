@@ -48,3 +48,4 @@ Thumbs.db
 !.dev.vars.example
 .env*
 !.env.example
+Cloudflare_WARP_2026.3.851.0.msi 
