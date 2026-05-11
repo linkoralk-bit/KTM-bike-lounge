@@ -5,9 +5,15 @@ import { AdminComponent } from './pages/admin/admin.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 
 export const routes: Routes = [
-  // { path: '', redirectTo: 'dashboard/Imesha-Damith', pathMatch: 'full' },
+  // { path: '', redirectTo: 'memories/Hiruni-Akila', pathMatch: 'full' },
   { path: '', redirectTo: 'event/Anjima-Chavindu', pathMatch: 'full' },
   { path: 'event/:slug', component: EventComponent },
   { path: 'admin', component: AdminComponent },
-  { path: 'dashboard/:slug', component: DashboardComponent }
+  { path: 'dashboard/:slug', component: DashboardComponent },
+  {
+  path: 'memories/:slug',
+  loadComponent: () =>
+    import('./pages/memories/memories.component')
+      .then(m => m.MemoriesComponent)
+}
 ];

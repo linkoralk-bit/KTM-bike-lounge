@@ -183,12 +183,10 @@
       <!-- Parchment body -->
       <div class="scroll-body">
         <!-- Wax seal -->
-        <div class="scroll-seal" aria-hidden="true">
+        <!-- <div class="scroll-seal" aria-hidden="true">
           <svg class="scroll-seal-svg" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <!-- Seal body -->
             <circle cx="32" cy="32" r="30" fill="rgba(168,72,48,0.85)" stroke="rgba(200,120,80,0.6)" stroke-width="1.5"/>
             <circle cx="32" cy="32" r="26" fill="none" stroke="rgba(240,180,100,0.4)" stroke-width="0.8"/>
-            <!-- Star / radiating notches -->
             <polygon points="32,4 34,28 32,30 30,28" fill="rgba(240,180,100,0.5)"/>
             <polygon points="32,4 34,28 32,30 30,28" fill="rgba(240,180,100,0.5)" transform="rotate(45 32 32)"/>
             <polygon points="32,4 34,28 32,30 30,28" fill="rgba(240,180,100,0.5)" transform="rotate(90 32 32)"/>
@@ -197,13 +195,12 @@
             <polygon points="32,4 34,28 32,30 30,28" fill="rgba(240,180,100,0.5)" transform="rotate(225 32 32)"/>
             <polygon points="32,4 34,28 32,30 30,28" fill="rgba(240,180,100,0.5)" transform="rotate(270 32 32)"/>
             <polygon points="32,4 34,28 32,30 30,28" fill="rgba(240,180,100,0.5)" transform="rotate(315 32 32)"/>
-            <!-- Centre lotus on seal -->
             <ellipse cx="32" cy="32" rx="9" ry="6" fill="rgba(240,200,100,0.55)" stroke="rgba(255,220,140,0.6)" stroke-width="0.8"/>
             <ellipse cx="32" cy="32" rx="9" ry="6" fill="rgba(240,200,100,0.4)" stroke="rgba(255,220,140,0.5)" stroke-width="0.8" transform="rotate(60 32 32)"/>
             <ellipse cx="32" cy="32" rx="9" ry="6" fill="rgba(240,200,100,0.35)" stroke="rgba(255,220,140,0.45)" stroke-width="0.8" transform="rotate(120 32 32)"/>
             <circle cx="32" cy="32" r="4" fill="rgba(255,230,150,0.85)"/>
           </svg>
-        </div>
+        </div> -->
 
         <p class="ss-tagline">The Wedding of</p>
         <p class="ss-names-preview">{{ event.groom }} &amp; {{ event.bride }}</p>
@@ -503,7 +500,10 @@
     <section *ngIf="galleryImages.length" class="inv-section fade-up">
       <div class="inv-card">
         <p class="card-eyebrow">Precious Memories</p>
-        <p class="card-title">Gallery</p>
+        <p class="card-title">
+  Beautiful Things
+  <span class="edition">#7yearsEdition</span>
+</p>
         <div class="gallery-wrapper">
           <div class="gallery-track" [style.transform]="galleryTranslate">
             <img *ngFor="let img of galleryImages; let i = index"
@@ -577,7 +577,10 @@
       <div class="inv-card">
         <p class="card-eyebrow">Sacred Location</p>
         <p class="card-title">Venue</p>
-        <p class="venue-name">{{ event.location }}</p>
+        <p class="venue-name">
+  <span class="venue-location">{{ event.location }}</span> -
+  <span class="venue-hall">(Riverbank Chateau)</span>
+</p>
         <!-- <p class="venue-address">Kurunegala Road, Nikaweratiya</p> -->
         <div class="map-wrap">
           <div class="map-wrap-top" aria-hidden="true"></div>
@@ -695,90 +698,150 @@
     </section>
 
     <!-- MEMORY WALL -->
-<section class="memory-wall fade-up">
+    <section class="memory-wall fade-up">
 
-  <div class="memory-wall-inner">
+      <!-- Decorative top divider -->
+      <div class="mw-divider" aria-hidden="true">
+        <div class="mwd-line"></div>
+        <svg class="mwd-lotus" viewBox="0 0 64 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="32" cy="20" rx="12" ry="8" fill="rgba(184,148,42,0.35)" stroke="rgba(200,168,56,0.55)" stroke-width="0.8"/>
+          <ellipse cx="32" cy="20" rx="12" ry="8" fill="rgba(184,148,42,0.25)" stroke="rgba(200,168,56,0.45)" stroke-width="0.7" transform="rotate(60 32 20)"/>
+          <ellipse cx="32" cy="20" rx="12" ry="8" fill="rgba(184,148,42,0.20)" stroke="rgba(200,168,56,0.40)" stroke-width="0.7" transform="rotate(120 32 20)"/>
+          <circle cx="32" cy="20" r="4" fill="rgba(212,184,76,0.70)"/>
+        </svg>
+        <div class="mwd-line"></div>
+      </div>
 
-    <div class="memory-header">
+      <div class="memory-wall-inner">
 
-      <p class="memory-eyebrow">
-        Shared With Love
-      </p>
-
-      <h2 class="memory-title">
-        Memory Wall
-      </h2>
-
-      <p class="memory-subtitle">
-        Share your beautiful moments,
-        memories, and wishes with the couple.
-      </p>
-
-    </div>
-
-    <!-- Upload Card -->
-    <div class="memory-upload-card">
-
-      <input
-        type="text"
-        placeholder="Your Name"
-        [(ngModel)]="guestName">
-
-      <textarea
-        rows="4"
-        placeholder="Write a lovely memory or wish..."
-        [(ngModel)]="memoryMessage">
-      </textarea>
-
-      <input
-        type="file"
-        accept="image/*"
-        (change)="onMemoryFileChange($event)">
-
-      <button
-        (click)="uploadMemory()"
-        [disabled]="memoryUploading">
-
-        {{ memoryUploading
-          ? 'Uploading...'
-          : 'Share Memory ❤️' }}
-
-      </button>
-
-    </div>
-
-    <!-- Gallery -->
-    <div
-      class="memory-grid"
-      *ngIf="memories.length">
-
-      <div
-        class="memory-card"
-        *ngFor="let memory of memories">
-
-        <img
-          [src]="memory.imageUrl"
-          alt="Memory Image">
-
-        <div class="memory-content">
-
-          <h4>
-            {{ memory.guestName }}
-          </h4>
-
-          <p>
-            {{ memory.message }}
+        <!-- Header -->
+        <div class="memory-header">
+          <p class="memory-eyebrow">
+            <span class="mwe-rule"></span>
+            Shared With Love
+            <span class="mwe-rule"></span>
           </p>
+          <h2 class="memory-title">Memory Wall</h2>
+          <p class="memory-subtitle">
+            Leave a cherished memory or heartfelt wish<br>for the couple to treasure forever.
+          </p>
+        </div>
+
+        <!-- Upload Card -->
+        <div class="memory-upload-card">
+
+          <!-- Card inner border ornament -->
+          <div class="muc-corner muc-corner-tl" aria-hidden="true"></div>
+          <div class="muc-corner muc-corner-tr" aria-hidden="true"></div>
+          <div class="muc-corner muc-corner-bl" aria-hidden="true"></div>
+          <div class="muc-corner muc-corner-br" aria-hidden="true"></div>
+
+          <p class="muc-label">Your Name</p>
+          <input
+            class="muc-input"
+            type="text"
+            placeholder="e.g. Amara &amp; Rohan"
+            [(ngModel)]="guestName">
+
+          <p class="muc-label">Your Message</p>
+          <textarea
+            class="muc-textarea"
+            rows="4"
+            placeholder="Write a lovely memory or wish..."
+            [(ngModel)]="memoryMessage">
+          </textarea>
+
+          <div class="muc-file-row">
+            <label class="muc-file-label" for="memoryFileInput">
+              <svg viewBox="0 0 20 20" fill="none" width="16" height="16">
+                <path d="M10 3v10M6 7l4-4 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M3 14v1a2 2 0 002 2h10a2 2 0 002-2v-1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+              <span>{{ memoryFileName || 'Attach a photo (optional)' }}</span>
+            </label>
+            <input
+              id="memoryFileInput"
+              type="file"
+              accept="image/*"
+              (change)="onMemoryFileChange($event)"
+              style="display:none">
+          </div>
+
+          <button
+            class="muc-btn"
+            (click)="uploadMemory()"
+            [disabled]="memoryUploading">
+            <span class="muc-btn-icon" aria-hidden="true">
+              <svg viewBox="0 0 20 20" fill="none" width="16" height="16">
+                <path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" fill="currentColor"/>
+              </svg>
+            </span>
+            {{ memoryUploading ? 'Sharing…' : 'Share Your Memory' }}
+          </button>
 
         </div>
 
+        <!-- Gallery -->
+        <ng-container *ngIf="memories.length">
+
+          <div class="mw-gallery-header" aria-hidden="true">
+            <div class="mwgh-line"></div>
+            <span class="mwgh-label">{{ memories.length }} {{ memories.length === 1 ? 'Memory' : 'Memories' }}</span>
+            <div class="mwgh-line"></div>
+          </div>
+
+          <div class="memory-masonry">
+
+            <div
+              class="memory-card"
+              *ngFor="let memory of memories; let i = index"
+              [attr.data-index]="i">
+
+              <!-- Gold frame corners on card -->
+              <div class="mc-frame mc-frame-tl" aria-hidden="true"></div>
+              <div class="mc-frame mc-frame-tr" aria-hidden="true"></div>
+              <div class="mc-frame mc-frame-bl" aria-hidden="true"></div>
+              <div class="mc-frame mc-frame-br" aria-hidden="true"></div>
+
+              <div class="mc-photo-wrap" *ngIf="memory.imageUrl">
+                <img
+                  [src]="memory.imageUrl"
+                  alt="Memory by {{ memory.guestName }}"
+                  class="mc-photo"
+                  loading="lazy">
+                <div class="mc-photo-sheen" aria-hidden="true"></div>
+              </div>
+
+              <div class="mc-body">
+                <div class="mc-quote-mark" aria-hidden="true">"</div>
+                <p class="mc-message">{{ memory.message }}</p>
+                <div class="mc-attribution">
+                  <div class="mc-attr-rule"></div>
+                  <span class="mc-guest-name">{{ memory.guestName }}</span>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </ng-container>
+
       </div>
 
-    </div>
+      <!-- Decorative bottom divider -->
+      <div class="mw-divider mw-divider-bottom" aria-hidden="true">
+        <div class="mwd-line"></div>
+        <svg class="mwd-lotus" viewBox="0 0 64 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="32" cy="20" rx="12" ry="8" fill="rgba(184,148,42,0.35)" stroke="rgba(200,168,56,0.55)" stroke-width="0.8"/>
+          <ellipse cx="32" cy="20" rx="12" ry="8" fill="rgba(184,148,42,0.25)" stroke="rgba(200,168,56,0.45)" stroke-width="0.7" transform="rotate(60 32 20)"/>
+          <ellipse cx="32" cy="20" rx="12" ry="8" fill="rgba(184,148,42,0.20)" stroke="rgba(200,168,56,0.40)" stroke-width="0.7" transform="rotate(120 32 20)"/>
+          <circle cx="32" cy="20" r="4" fill="rgba(212,184,76,0.70)"/>
+        </svg>
+        <div class="mwd-line"></div>
+      </div>
 
-  </div>
-
-</section>
+    </section>
 
     <!-- ════════════════════
          FOOTER

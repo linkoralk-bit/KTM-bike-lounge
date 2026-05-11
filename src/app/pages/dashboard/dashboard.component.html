@@ -96,5 +96,102 @@
       </div>
     </div>
 
+    <!-- MEMORY MANAGEMENT -->
+<div class="table-card memories-card">
+
+  <div class="table-header">
+
+  <h2>Guest Memories</h2>
+
+  <div class="memory-filters">
+
+    <button
+      [class.active]="selectedMemoryFilter === 'all'"
+      (click)="selectedMemoryFilter = 'all'; applyMemoryFilter()">
+
+      All
+
+    </button>
+
+    <button
+      [class.active]="selectedMemoryFilter === 'pending'"
+      (click)="selectedMemoryFilter = 'pending'; applyMemoryFilter()">
+
+      Pending
+
+    </button>
+
+    <button
+      [class.active]="selectedMemoryFilter === 'approved'"
+      (click)="selectedMemoryFilter = 'approved'; applyMemoryFilter()">
+
+      Approved
+
+    </button>
+
+  </div>
+
+</div>
+
+  <div
+    class="memory-admin-grid"
+    *ngIf="memories.length">
+
+    <div
+      class="memory-admin-card"
+      *ngFor="let memory of filteredMemories">
+
+      <img
+        [src]="memory.imageUrl"
+        alt="Memory">
+
+      <div class="memory-admin-content">
+
+        <h3>
+          {{ memory.guestName }}
+        </h3>
+
+        <p>
+          {{ memory.message }}
+        </p>
+
+        <span
+          class="memory-status"
+          [class.pending]="memory.status === 'pending'"
+          [class.approved]="memory.status === 'approved'">
+
+          {{ memory.status }}
+
+        </span>
+
+        <div class="memory-actions">
+
+          <button
+            *ngIf="memory.status === 'pending'"
+            class="approve-btn"
+            (click)="approveMemory(memory._id)">
+
+            ✅ Approve
+
+          </button>
+
+          <button
+            class="delete-btn"
+            (click)="deleteMemory(memory._id)">
+
+            🗑 Delete
+
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
   </div>
 </div>

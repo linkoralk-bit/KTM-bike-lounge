@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../services/api.service';
-
+import { MemoryService } from '../../services/memory.service';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
@@ -20,11 +20,16 @@ export class DashboardComponent implements OnInit {
   attendingCount = 0;
   notAttendingCount = 0;
 
+  memories: any[] = [];
+  filteredMemories: any[] = [];
+  selectedMemoryFilter = 'all';
+
   isLoading = true;
 
   constructor(
     private route: ActivatedRoute,
-    private api: ApiService
+    private api: ApiService,
+    private memoryService: MemoryService
   ) {}
 
   ngOnInit() {
@@ -40,6 +45,7 @@ export class DashboardComponent implements OnInit {
         this.calculateStats();
 
         this.isLoading = false;
+        this.loadMemories();
       });
     });
   }
@@ -113,4 +119,88 @@ export class DashboardComponent implements OnInit {
     const url = `https://wa.me/${formatted}?text=${message}`;
     window.open(url, '_blank');
   }
+
+  // =========================
+// ❤️ LOAD MEMORIES
+// =========================
+
+loadMemories() {
+
+  this.memoryService
+    .getAllMemories(this.event._id)
+    .subscribe((res: any) => {
+
+      this.memories = res;
+
+    this.applyMemoryFilter();
+
+    });
+
+}
+
+applyMemoryFilter() {
+
+  if (this.selectedMemoryFilter === 'pending') {
+
+    this.filteredMemories =
+      this.memories.filter(
+        m => m.status === 'pending'
+      );
+
+    return;
+  }
+
+  if (this.selectedMemoryFilter === 'approved') {
+
+    this.filteredMemories =
+      this.memories.filter(
+        m => m.status === 'approved'
+      );
+
+    return;
+  }
+
+  this.filteredMemories = [...this.memories];
+
+}
+
+
+// =========================
+// ✅ APPROVE MEMORY
+// =========================
+
+approveMemory(id: string) {
+
+  this.memoryService
+    .approveMemory(id)
+    .subscribe(() => {
+
+      this.loadMemories();
+
+    });
+
+}
+
+
+// =========================
+// 🗑 DELETE MEMORY
+// =========================
+
+deleteMemory(id: string) {
+
+  const confirmed = confirm(
+    'Delete this memory?'
+  );
+
+  if (!confirmed) return;
+
+  this.memoryService
+    .deleteMemory(id)
+    .subscribe(() => {
+
+      this.loadMemories();
+
+    });
+
+}
 }

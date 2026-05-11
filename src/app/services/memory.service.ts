@@ -6,8 +6,8 @@ import { HttpClient } from '@angular/common/http';
 })
 export class MemoryService {
 
-  apiUrl = 'http://127.0.0.1:5000/api/memories';
-//   apiUrl = 'https://weddingplatformbackend.onrender.com/api/memories';
+  // apiUrl = 'http://127.0.0.1:5000/api/memories';
+  apiUrl = 'https://weddingplatformbackend.onrender.com/api/memories';
 
   constructor(private http: HttpClient) {}
 
@@ -15,15 +15,49 @@ export class MemoryService {
     return this.http.post(`${this.apiUrl}/upload`, formData);
   }
 
-  getMemories(eventId: string) {
-    return this.http.get(`${this.apiUrl}/${eventId}`);
-  }
+  getMemoriesBySlug(slug: string) {
+
+  return this.http.get(
+    `${this.apiUrl}/event/${slug}`
+  );
+
+}
+
+getMemories(eventId: string) {
+  return this.http.get(
+    `${this.apiUrl}/id/${eventId}`
+  );
+}
 
   getAdminMemories(eventId: string) {
     return this.http.get(`${this.apiUrl}/admin/${eventId}`);
   }
 
-  approveMemory(id: string) {
-    return this.http.put(`${this.apiUrl}/approve/${id}`, {});
-  }
+
+  getAllMemories(eventId: string) {
+
+  return this.http.get(
+    `${this.apiUrl}/admin/all/${eventId}`
+  );
+
+}
+
+
+approveMemory(id: string) {
+
+  return this.http.put(
+    `${this.apiUrl}/approve/${id}`,
+    {}
+  );
+
+}
+
+
+deleteMemory(id: string) {
+
+  return this.http.delete(
+    `${this.apiUrl}/${id}`
+  );
+
+}
 }

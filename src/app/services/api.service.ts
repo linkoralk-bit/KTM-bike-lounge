@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-const API = 'http://127.0.0.1:5000/api';
-// const API = 'https://weddingplatformbackend.onrender.com/api';
+// const API = 'http://127.0.0.1:5000/api';
+const API = 'https://weddingplatformbackend.onrender.com/api';
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
