@@ -22,7 +22,10 @@ interface Heart {
 @Component({
   selector: 'app-event',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [
+  CommonModule,
+  FormsModule
+],
   templateUrl: './event.component.html',
   styleUrls: ['./event.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -51,7 +54,7 @@ export class EventComponent implements OnInit, OnDestroy, AfterViewInit {
   activeBgIndex = 0;
   private bgInterval: any;
 
-  // Floating particles
+  // Floating petal particles (reuses Heart interface, renamed semantically)
   hearts: Heart[] = [];
   private heartIdCounter = 0;
   private heartSpawnInterval: any;
@@ -65,22 +68,26 @@ export class EventComponent implements OnInit, OnDestroy, AfterViewInit {
   currentIndex  = 0;
   currentImage  = '';
 
+  // Template loops
   readonly filmHoles = Array(8).fill(0);
   readonly HEART_PATH = '';
 
-  // Champagne / pearl particle palette
+  // Romantic rose & gold heart colours
   readonly HEART_COLORS = [
-    '#d9b87a', // champagne
-    '#c79b56', // gold
-    '#f0e2c2', // pearl
-    '#b8884a', // antique
-    '#e8cf95', // light gold
-    '#a87a3c', // bronze
+    '#c86464', // soft rose red
+    '#b8942a', // liquid gold
+    '#d48080', // blush rose
+    '#c84858', // deep rose
+    '#d4b84c', // champagne gold
+    '#be6e6e', // dusty rose
   ];
 
   memories: any[] = [];
 
-  // Premium Private Collection
+  // ── PREMIUM PRIVATE COLLECTION ────────────────────────
+  // Curated illustrated artworks for the premium edition.
+  // These are bundled with the invitation (assets/images/…)
+  // and shown in the "Love Story · Private Collection" gallery.
   readonly premiumArtworks: { src: string; title: string; chapter: string; caption: string; }[] = [
     { src: 'assets/images/anime1.png', title: 'Golden Hour',     chapter: 'Chapter I',   caption: 'Where eyes first met beneath a sunlit promise.' },
     { src: 'assets/images/anime2.png', title: 'Foreheads Touch', chapter: 'Chapter II',  caption: 'A vow whispered without a single word.' },
@@ -116,12 +123,16 @@ export class EventComponent implements OnInit, OnDestroy, AfterViewInit {
     this.startFeaturedArtAuto();
   }
 
-  // Memory wall
-  guestName = '';
-  memoryMessage = '';
-  selectedMemoryFile: any;
-  memoryUploading = false;
-  memoryFileName = '';
+guestName = '';
+memoryMessage = '';
+
+selectedMemoryFile: any;
+
+memoryUploading = false;
+
+memoryFileName = '';
+
+// backendUrl = 'http://127.0.0.1:5000';
 
   constructor(
     private route:     ActivatedRoute,
@@ -144,14 +155,20 @@ export class EventComponent implements OnInit, OnDestroy, AfterViewInit {
         `https://maps.google.com/maps?q=${encodeURIComponent(res.location)}&output=embed`
       );
 
-      this.bgSlides = [
-        '/assets/images/anime1.png',
-        '/assets/images/anime2.png',
-        '/assets/images/anime3.png',
-        '/assets/images/anime4.png',
-        '/assets/images/anime5.png',
-        '/assets/images/anime6.png',
-      ];
+      // if (res.gallery?.length >= 1) {
+      //   this.bgSlides = res.gallery.slice(0, 5);
+      // } else {
+
+        this.bgSlides = [
+          '/assets/images/anime1.png',
+          '/assets/images/anime2.png',
+          '/assets/images/anime3.png',
+          '/assets/images/anime4.png',
+          '/assets/images/anime5.png',
+          '/assets/images/anime6.png',
+        ];
+
+      // }
 
       this.startBgSlideshow();
       this.startGalleryAuto();
@@ -165,44 +182,62 @@ export class EventComponent implements OnInit, OnDestroy, AfterViewInit {
     setTimeout(() => this.initScrollObserver(), 800);
   }
 
-  // ── REVEAL ANIMATION ────────────────────────────────────
+  // ── SCROLL OPEN ANIMATION ────────────────────────────────
   openEnvelope(audio: HTMLAudioElement) {
     if (!this.isPlaying) {
-      audio.play().then(() => {
-        this.isPlaying = true;
-        this.cdr.detectChanges();
-      }).catch(() => {});
-    }
+  audio.play().then(() => {
+    this.isPlaying = true;
+    this.cdr.detectChanges();
+  }).catch(() => {});
+}
     const wrap     = document.getElementById('envelopeWrap');
     const hint     = document.getElementById('wsHint');
     const letterEl = document.getElementById('letterReveal');
     const sceneEl  = document.getElementById('envelopeScene');
     const burnEl   = document.getElementById('filmBurn');
 
+    // if (!wrap || wrap.classList.contains('scroll-opened')) return;
     if (!wrap || this.isOpening) return;
-    this.isOpening = true;
 
+this.isOpening = true;
+
+    // Mark as opened immediately to prevent double-tap
     wrap.classList.add('scroll-opened');
+
+    // Step 1: Hide hint
     if (hint) hint.style.opacity = '0';
+
+    // Step 2: Animate scroll unrolling — scale the scroll-body taller
     wrap.classList.add('scroll-unrolling');
 
-    setTimeout(() => { if (burnEl) burnEl.classList.add('burning'); }, 600);
+    // Step 3: Fire the burn/flash transition
+    setTimeout(() => {
+      if (burnEl) burnEl.classList.add('burning');
+    }, 600);
 
+    // Step 4: At peak burn, swap scenes
     setTimeout(() => {
       if (sceneEl) {
         sceneEl.style.transition = 'opacity 0.4s ease';
         sceneEl.style.opacity    = '0';
         sceneEl.style.pointerEvents = 'none';
       }
+
       if (letterEl) {
         letterEl.style.display = 'block';
-        letterEl.getBoundingClientRect();
+        letterEl.getBoundingClientRect(); // force reflow
         letterEl.classList.add('revealed');
-        setTimeout(() => { this.animateNames(); this.cdr.detectChanges(); }, 500);
+
+        setTimeout(() => {
+          this.animateNames();
+          this.cdr.detectChanges();
+        }, 500);
+
         setTimeout(() => this.initScrollObserver(), 1400);
       }
     }, 1050);
 
+    // Step 5: Clean up after transition
     setTimeout(() => {
       if (sceneEl)  sceneEl.style.display = 'none';
       if (burnEl)   burnEl.classList.remove('burning');
@@ -218,7 +253,10 @@ export class EventComponent implements OnInit, OnDestroy, AfterViewInit {
       this.cdr.detectChanges();
     }, 6000);
   }
-  isBgActive(i: number): boolean { return i === this.activeBgIndex; }
+
+  isBgActive(i: number): boolean {
+    return i === this.activeBgIndex;
+  }
 
   // ── GALLERY ─────────────────────────────────────────────
   get galleryImages(): string[] { return this.event?.gallery || []; }
@@ -232,7 +270,9 @@ export class EventComponent implements OnInit, OnDestroy, AfterViewInit {
   prevSlide() { this.goToSlide(this.galleryIndex - 1); }
   nextSlide() { this.goToSlide(this.galleryIndex + 1); }
 
-  get galleryTranslate(): string { return `translateX(-${this.galleryIndex * 100}%)`; }
+  get galleryTranslate(): string {
+    return `translateX(-${this.galleryIndex * 100}%)`;
+  }
 
   startGalleryAuto() {
     this.galleryAutoInterval = setInterval(() => {
@@ -245,27 +285,34 @@ export class EventComponent implements OnInit, OnDestroy, AfterViewInit {
     this.startGalleryAuto();
   }
 
-  // ── PARTICLES ───────────────────────────────────────────
+  // ── FLOATING PETALS ─────────────────────────────────────
   spawnInitialHearts() {
-    for (let i = 0; i < 18; i++) setTimeout(() => this.spawnHeart(), i * 400);
+    for (let i = 0; i < 20; i++) {
+      setTimeout(() => this.spawnHeart(), i * 400);
+    }
   }
+
   startHeartSpawner() {
     this.ngZone.runOutsideAngular(() => {
       this.heartSpawnInterval = setInterval(() => {
-        this.ngZone.run(() => { this.spawnHeart(); this.cdr.detectChanges(); });
-      }, 1100);
+        this.ngZone.run(() => {
+          this.spawnHeart();
+          this.cdr.detectChanges();
+        });
+      }, 1000);
     });
   }
+
   spawnHeart() {
     const id = this.heartIdCounter++;
     const heart: Heart = {
       id,
       x:        Math.random() * 100,
-      size:     Math.random() * 10 + 8,
+      size:     Math.random() * 14 + 17,
       delay:    Math.random() * 8,
-      duration: Math.random() * 14 + 14,
+      duration: Math.random() * 14 + 12,
       colorIdx: Math.floor(Math.random() * this.HEART_COLORS.length),
-      opacity:  0.18 + Math.random() * 0.32,
+      opacity:  0.15 + Math.random() * 0.35,
     };
     this.hearts.push(heart);
     setTimeout(() => {
@@ -273,43 +320,61 @@ export class EventComponent implements OnInit, OnDestroy, AfterViewInit {
       this.cdr.detectChanges();
     }, (heart.duration + heart.delay + 2) * 1000);
   }
-  heartColor(idx: number): string { return this.HEART_COLORS[idx % this.HEART_COLORS.length]; }
+
+  heartColor(idx: number): string {
+    return this.HEART_COLORS[idx % this.HEART_COLORS.length];
+  }
+
   trackHeart(_: number, h: Heart): number { return h.id; }
 
   // ── TYPEWRITER ──────────────────────────────────────────
   animateNames() {
-    this.typeIntervals.forEach(clearInterval);
-    this.typeTimeouts.forEach(clearTimeout);
-    this.typeIntervals = [];
-    this.typeTimeouts = [];
-    this.displayGroom = '';
-    this.displayBride = '';
+  // prevent duplicate typing
+  this.typeIntervals.forEach(clearInterval);
+  this.typeTimeouts.forEach(clearTimeout);
 
-    const groom = this.event?.groom || '';
-    const bride = this.event?.bride || '';
-    let i = 0;
+  this.typeIntervals = [];
+  this.typeTimeouts = [];
 
-    const gi = setInterval(() => {
-      if (i < groom.length) {
-        this.displayGroom += groom[i]; i++;
-        this.cdr.detectChanges();
-      } else {
-        clearInterval(gi);
-        const t = setTimeout(() => {
-          let j = 0;
-          const bi = setInterval(() => {
-            if (j < bride.length) {
-              this.displayBride += bride[j]; j++;
-              this.cdr.detectChanges();
-            } else { clearInterval(bi); }
-          }, 95);
-          this.typeIntervals.push(bi);
-        }, 420);
-        this.typeTimeouts.push(t);
-      }
-    }, 95);
-    this.typeIntervals.push(gi);
-  }
+  // reset values before typing
+  this.displayGroom = '';
+  this.displayBride = '';
+
+  const groom = this.event?.groom || '';
+  const bride = this.event?.bride || '';
+
+  let i = 0;
+
+  const gi = setInterval(() => {
+    if (i < groom.length) {
+      this.displayGroom += groom[i];
+      i++;
+      this.cdr.detectChanges();
+    } else {
+      clearInterval(gi);
+
+      const t = setTimeout(() => {
+        let j = 0;
+
+        const bi = setInterval(() => {
+          if (j < bride.length) {
+            this.displayBride += bride[j];
+            j++;
+            this.cdr.detectChanges();
+          } else {
+            clearInterval(bi);
+          }
+        }, 90);
+
+        this.typeIntervals.push(bi);
+      }, 400);
+
+      this.typeTimeouts.push(t);
+    }
+  }, 90);
+
+  this.typeIntervals.push(gi);
+}
 
   // ── COUNTDOWN ───────────────────────────────────────────
   startCountdown() {
@@ -348,7 +413,10 @@ export class EventComponent implements OnInit, OnDestroy, AfterViewInit {
   initScrollObserver() {
     const io = new IntersectionObserver(
       entries => entries.forEach(e => {
-        if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          io.unobserve(e.target);
+        }
       }),
       { threshold: 0.07 }
     );
@@ -363,6 +431,7 @@ export class EventComponent implements OnInit, OnDestroy, AfterViewInit {
     document.body.style.overflow = 'hidden';
     this.cdr.detectChanges();
   }
+
   closeLightbox(event?: MouseEvent) {
     if (!event || (event.target as HTMLElement).classList.contains('lb-overlay')) {
       this.showLightbox = false;
@@ -370,11 +439,13 @@ export class EventComponent implements OnInit, OnDestroy, AfterViewInit {
       this.cdr.detectChanges();
     }
   }
+
   prevLightbox() {
     this.currentIndex = (this.currentIndex - 1 + this.event.gallery.length) % this.event.gallery.length;
     this.currentImage = this.event.gallery[this.currentIndex];
     this.cdr.detectChanges();
   }
+
   nextLightbox() {
     this.currentIndex = (this.currentIndex + 1) % this.event.gallery.length;
     this.currentImage = this.event.gallery[this.currentIndex];
@@ -384,8 +455,8 @@ export class EventComponent implements OnInit, OnDestroy, AfterViewInit {
   // ── MUSIC ────────────────────────────────────────────────
   async toggleMusic(audio: HTMLAudioElement) {
     try {
-      if (this.isPlaying) audio.pause();
-      else await audio.play();
+      if (this.isPlaying) { audio.pause(); }
+      else { await audio.play(); }
       this.isPlaying = !this.isPlaying;
       this.cdr.detectChanges();
     } catch (e) { console.warn(e); }
@@ -409,45 +480,97 @@ export class EventComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   loadMemories() {
-    if (!this.event?._id) return;
-    this.memoryService.getMemories(this.event._id).subscribe((res: any) => {
+
+  if (!this.event?._id) return;
+
+  this.memoryService
+    .getMemories(this.event._id)
+    .subscribe((res: any) => {
+
       this.memories = res;
       this.cdr.detectChanges();
+
     });
+
+}
+
+
+onMemoryFileChange(event: any) {
+
+  this.selectedMemoryFile =
+    event.target.files[0];
+
+  this.memoryFileName =
+    this.selectedMemoryFile?.name || '';
+
+}
+
+
+uploadMemory() {
+
+  if (!this.selectedMemoryFile) {
+    alert('Please select an image');
+    return;
   }
 
-  onMemoryFileChange(event: any) {
-    this.selectedMemoryFile = event.target.files[0];
-    this.memoryFileName = this.selectedMemoryFile?.name || '';
+  if (!this.guestName) {
+    alert('Please enter your name');
+    return;
   }
 
-  uploadMemory() {
-    if (!this.selectedMemoryFile) { alert('Please select an image'); return; }
-    if (!this.guestName) { alert('Please enter your name'); return; }
+  this.memoryUploading = true;
 
-    this.memoryUploading = true;
-    const formData = new FormData();
-    formData.append('eventId', this.event._id);
-    formData.append('guestName', this.guestName);
-    formData.append('message', this.memoryMessage);
-    formData.append('image', this.selectedMemoryFile);
+  const formData = new FormData();
 
-    this.memoryService.uploadMemory(formData).subscribe({
+  formData.append(
+    'eventId',
+    this.event._id
+  );
+
+  formData.append(
+    'guestName',
+    this.guestName
+  );
+
+  formData.append(
+    'message',
+    this.memoryMessage
+  );
+
+  formData.append(
+    'image',
+    this.selectedMemoryFile
+  );
+
+  this.memoryService
+    .uploadMemory(formData)
+    .subscribe({
+
       next: () => {
+
         this.memoryUploading = false;
+
         this.guestName = '';
         this.memoryMessage = '';
         this.selectedMemoryFile = null;
-        this.memoryFileName = '';
-        alert('Memory shared successfully ❤');
+
+        alert('Memory shared successfully ❤️');
+
         this.loadMemories();
+
       },
+
       error: () => {
+
         this.memoryUploading = false;
+
         alert('Upload failed');
+
       }
+
     });
-  }
+
+}
 
   // ── CLEANUP ──────────────────────────────────────────────
   ngOnDestroy() {
@@ -459,8 +582,7 @@ export class EventComponent implements OnInit, OnDestroy, AfterViewInit {
     this.typeIntervals.forEach(clearInterval);
     this.typeTimeouts.forEach(clearTimeout);
   }
-
-  // ── DATE HELPERS ─────────────────────────────────────────
+  // ── DATE HELPER ───────────────────────────────────────────
   getDaySuffix(): string {
     if (!this.event?.date) return '';
     const day = new Date(this.event.date).getDate();
@@ -473,17 +595,40 @@ export class EventComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  getCalendarCells(): (number | null)[] {
-    if (!this.event?.date) return Array(35).fill(null);
-    const date = new Date(this.event.date);
-    const year = date.getFullYear();
-    const month = date.getMonth();
-    const firstDay = new Date(year, month, 1).getDay();
-    const lastDate = new Date(year, month + 1, 0).getDate();
-    const cells: (number | null)[] = [];
-    for (let i = 0; i < firstDay; i++) cells.push(null);
-    for (let day = 1; day <= lastDate; day++) cells.push(day);
-    while (cells.length < 35) cells.push(null);
-    return cells;
+  // Add this method to your EventComponent class (after getDaySuffix())
+
+// ── CALENDAR HELPER ───────────────────────────────────────────
+getCalendarCells(): (number | null)[] {
+  if (!this.event?.date) return Array(35).fill(null);
+  
+  const date = new Date(this.event.date);
+  const year = date.getFullYear();
+  const month = date.getMonth();
+  
+  // First day of month (0 = Sunday, 1 = Monday, etc.)
+  const firstDay = new Date(year, month, 1).getDay();
+  
+  // Last day of month
+  const lastDate = new Date(year, month + 1, 0).getDate();
+  
+  // Total cells (5 rows × 7 days = 35 cells)
+  const cells: (number | null)[] = [];
+  
+  // Add null for days before month starts
+  for (let i = 0; i < firstDay; i++) {
+    cells.push(null);
   }
+  
+  // Add actual days of the month
+  for (let day = 1; day <= lastDate; day++) {
+    cells.push(day);
+  }
+  
+  // Fill remaining cells with null
+  while (cells.length < 35) {
+    cells.push(null);
+  }
+  
+  return cells;
+}
 }

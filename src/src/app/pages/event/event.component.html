@@ -1,0 +1,1078 @@
+<!-- ══════════════════════════════════════════════════════
+     THEME — THE PRESSED BOTANICAL WAX SEAL
+     Concept: A crisp white card bound with sheer gold
+     twine ribbon. Dried gypsophila sprigs fan above a
+     bronzed wax "Save the Date" seal. On opening, a
+     clean white invitation reveals names in refined
+     italic type with a calendar marking the big day.
+     Palette: Crisp White · Warm Ivory · Antique Bronze
+     English only. All data from backend (no hardcoded text).
+     ══════════════════════════════════════════════════════ -->
+
+<!-- ░░ LOADING STATE ░░ -->
+<ng-container *ngIf="!event">
+  <div class="full-loader">
+    <div class="fl-lotus-wrap" aria-hidden="true">
+      <!-- Botanical sprig loader — gypsophila / baby's breath shape -->
+      <svg class="fl-lotus-svg" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Main stem -->
+        <path d="M32 56 C32 48 31 40 30 32 C29 24 28 18 32 10" stroke="rgba(140,106,56,0.60)" stroke-width="1.2" stroke-linecap="round"/>
+        <!-- Branching stems -->
+        <path d="M31 38 C28 35 24 33 20 31" stroke="rgba(140,106,56,0.50)" stroke-width="0.9" stroke-linecap="round"/>
+        <path d="M31 32 C28 28 25 25 22 22" stroke="rgba(140,106,56,0.50)" stroke-width="0.9" stroke-linecap="round"/>
+        <path d="M31 26 C29 22 28 18 30 14" stroke="rgba(140,106,56,0.50)" stroke-width="0.9" stroke-linecap="round"/>
+        <path d="M31 38 C34 35 38 33 41 30" stroke="rgba(140,106,56,0.50)" stroke-width="0.9" stroke-linecap="round"/>
+        <path d="M31 32 C35 28 38 25 40 22" stroke="rgba(140,106,56,0.50)" stroke-width="0.9" stroke-linecap="round"/>
+        <path d="M31 26 C33 22 35 18 34 14" stroke="rgba(140,106,56,0.50)" stroke-width="0.9" stroke-linecap="round"/>
+        <!-- Tiny flower buds -->
+        <g class="fl-petal"><circle cx="20" cy="31" r="2.5" fill="rgba(212,184,120,0.75)" stroke="rgba(140,106,56,0.55)" stroke-width="0.5"/></g>
+        <g class="fl-petal"><circle cx="22" cy="22" r="2.2" fill="rgba(200,170,100,0.70)" stroke="rgba(140,106,56,0.50)" stroke-width="0.5"/></g>
+        <g class="fl-petal"><circle cx="30" cy="14" r="2.0" fill="rgba(212,184,120,0.75)" stroke="rgba(140,106,56,0.55)" stroke-width="0.5"/></g>
+        <g class="fl-petal"><circle cx="41" cy="30" r="2.5" fill="rgba(200,170,100,0.70)" stroke="rgba(140,106,56,0.50)" stroke-width="0.5"/></g>
+        <g class="fl-petal"><circle cx="40" cy="22" r="2.2" fill="rgba(212,184,120,0.75)" stroke="rgba(140,106,56,0.55)" stroke-width="0.5"/></g>
+        <g class="fl-petal"><circle cx="34" cy="14" r="2.0" fill="rgba(200,170,100,0.70)" stroke="rgba(140,106,56,0.50)" stroke-width="0.5"/></g>
+        <!-- Inner small buds -->
+        <g class="fl-petal"><circle cx="26" cy="27" r="1.6" fill="rgba(224,196,140,0.65)" stroke="rgba(160,120,60,0.45)" stroke-width="0.4"/></g>
+        <g class="fl-petal"><circle cx="36" cy="27" r="1.6" fill="rgba(224,196,140,0.65)" stroke="rgba(160,120,60,0.45)" stroke-width="0.4"/></g>
+      </svg>
+    </div>
+    <p class="fl-title">Preparing your invitation…</p>
+    <p class="fl-subtitle">A moment, please</p>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="event">
+
+  <!-- ░░ MUSIC ░░ -->
+  <audio #bgMusic loop>
+    <source src="/music/romantic.mp3" type="audio/mp3">
+  </audio>
+  <button class="music-btn"
+          [class.music-on]="isPlaying"
+          (click)="toggleMusic(bgMusic)"
+          aria-label="Toggle background music">
+    <span class="music-icon">{{ isPlaying ? '⏸' : '♫' }}</span>
+    <span class="music-ring" *ngIf="isPlaying" aria-hidden="true"></span>
+  </button>
+
+  <!-- ░░ FLOATING DRIED FLOWER PETALS ░░ -->
+  <div class="petal-layer" aria-hidden="true">
+    <div *ngFor="let h of hearts; trackBy: trackHeart"
+         class="petal"
+         [style.left.%]="h.x"
+         [style.animation-duration.s]="h.duration"
+         [style.animation-delay.s]="h.delay"
+         [style.font-size.px]="h.size"
+         [style.opacity]="h.opacity"
+         [attr.data-color]="h.colorIdx">
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════
+       CARD ENTRY SCENE — crisp white save-the-date
+       ══════════════════════════════════════════════════════ -->
+  <div class="scroll-scene" id="envelopeScene">
+
+    <!-- Soft circular botanical watermark background -->
+    <div class="ss-mandala-bg" aria-hidden="true">
+      <svg class="ssmb-svg" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Concentric delicate rings -->
+        <circle cx="200" cy="200" r="188" stroke="rgba(140,106,56,1)" stroke-width="0.7"/>
+        <circle cx="200" cy="200" r="172" stroke="rgba(140,106,56,0.75)" stroke-width="0.5"/>
+        <circle cx="200" cy="200" r="152" stroke="rgba(140,106,56,0.85)" stroke-width="0.6"/>
+        <circle cx="200" cy="200" r="132" stroke="rgba(140,106,56,0.65)" stroke-width="0.4"/>
+        <circle cx="200" cy="200" r="112" stroke="rgba(140,106,56,0.75)" stroke-width="0.5"/>
+        <!-- Radial spokes -->
+        <line x1="200" y1="12" x2="200" y2="388" stroke="rgba(140,106,56,0.35)" stroke-width="0.4"/>
+        <line x1="12" y1="200" x2="388" y2="200" stroke="rgba(140,106,56,0.35)" stroke-width="0.4"/>
+        <line x1="56" y1="56" x2="344" y2="344" stroke="rgba(140,106,56,0.30)" stroke-width="0.4"/>
+        <line x1="344" y1="56" x2="56" y2="344" stroke="rgba(140,106,56,0.30)" stroke-width="0.4"/>
+        <line x1="200" y1="12" x2="200" y2="388" stroke="rgba(140,106,56,0.22)" stroke-width="0.3" transform="rotate(22.5 200 200)"/>
+        <line x1="200" y1="12" x2="200" y2="388" stroke="rgba(140,106,56,0.22)" stroke-width="0.3" transform="rotate(67.5 200 200)"/>
+        <line x1="200" y1="12" x2="200" y2="388" stroke="rgba(140,106,56,0.22)" stroke-width="0.3" transform="rotate(112.5 200 200)"/>
+        <line x1="200" y1="12" x2="200" y2="388" stroke="rgba(140,106,56,0.22)" stroke-width="0.3" transform="rotate(157.5 200 200)"/>
+        <!-- Tiny bud ornaments on outermost ring -->
+        <circle cx="200" cy="12" r="4" fill="rgba(140,106,56,0.35)" transform="rotate(0 200 200)"/>
+        <circle cx="200" cy="12" r="4" fill="rgba(140,106,56,0.35)" transform="rotate(45 200 200)"/>
+        <circle cx="200" cy="12" r="4" fill="rgba(140,106,56,0.35)" transform="rotate(90 200 200)"/>
+        <circle cx="200" cy="12" r="4" fill="rgba(140,106,56,0.35)" transform="rotate(135 200 200)"/>
+        <circle cx="200" cy="12" r="4" fill="rgba(140,106,56,0.35)" transform="rotate(180 200 200)"/>
+        <circle cx="200" cy="12" r="4" fill="rgba(140,106,56,0.35)" transform="rotate(225 200 200)"/>
+        <circle cx="200" cy="12" r="4" fill="rgba(140,106,56,0.35)" transform="rotate(270 200 200)"/>
+        <circle cx="200" cy="12" r="4" fill="rgba(140,106,56,0.35)" transform="rotate(315 200 200)"/>
+        <!-- Centre floral motif -->
+        <circle cx="200" cy="200" r="16" fill="rgba(140,106,56,0.30)" stroke="rgba(180,140,60,0.50)" stroke-width="0.7"/>
+        <circle cx="200" cy="200" r="8" fill="rgba(200,160,80,0.40)"/>
+      </svg>
+    </div>
+
+    <!-- Corner botanical sprigs — dried gypsophila style -->
+    <div class="ss-corner ss-corner-tl" aria-hidden="true">
+      <svg viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Sprig stems radiating from corner -->
+        <path d="M0 180 C15 150 35 120 60 90 C80 68 105 55 130 38 C152 24 168 10 180 0"
+              stroke="rgba(140,106,56,0.90)" stroke-width="1.2" stroke-linecap="round"/>
+        <path d="M0 180 C10 162 22 144 42 124 C60 106 80 96 100 82 C118 70 138 56 155 38 C165 28 172 14 180 0"
+              stroke="rgba(140,106,56,0.60)" stroke-width="0.7" stroke-linecap="round"/>
+        <!-- Side branch stems -->
+        <path d="M60 90 C52 82 42 78 34 72" stroke="rgba(140,106,56,0.55)" stroke-width="0.7" stroke-linecap="round"/>
+        <path d="M85 68 C78 62 70 60 62 56" stroke="rgba(140,106,56,0.50)" stroke-width="0.7" stroke-linecap="round"/>
+        <path d="M105 55 C100 46 98 38 100 30" stroke="rgba(140,106,56,0.50)" stroke-width="0.7" stroke-linecap="round"/>
+        <path d="M130 38 C128 30 130 22 134 16" stroke="rgba(140,106,56,0.45)" stroke-width="0.6" stroke-linecap="round"/>
+        <!-- Tiny buds on branch tips -->
+        <circle cx="34" cy="72" r="3.5" fill="rgba(212,184,120,0.70)" stroke="rgba(140,106,56,0.50)" stroke-width="0.5"/>
+        <circle cx="62" cy="56" r="3.0" fill="rgba(200,170,100,0.65)" stroke="rgba(140,106,56,0.45)" stroke-width="0.5"/>
+        <circle cx="100" cy="30" r="2.8" fill="rgba(212,184,120,0.68)" stroke="rgba(140,106,56,0.48)" stroke-width="0.5"/>
+        <circle cx="134" cy="16" r="2.5" fill="rgba(200,170,100,0.62)" stroke="rgba(140,106,56,0.42)" stroke-width="0.5"/>
+        <!-- Smaller scatter buds -->
+        <circle cx="47" cy="80" r="2.2" fill="rgba(224,196,140,0.58)" stroke="rgba(160,120,60,0.40)" stroke-width="0.4"/>
+        <circle cx="72" cy="62" r="2.0" fill="rgba(212,184,120,0.55)" stroke="rgba(140,106,56,0.38)" stroke-width="0.4"/>
+        <circle cx="92" cy="48" r="2.2" fill="rgba(200,170,100,0.58)" stroke="rgba(140,106,56,0.40)" stroke-width="0.4"/>
+        <circle cx="118" cy="46" r="1.8" fill="rgba(224,196,140,0.55)" stroke="rgba(160,120,60,0.38)" stroke-width="0.4"/>
+        <!-- Tiny leaves -->
+        <path d="M65 88 C58 82 52 84 54 88 C57 94 64 92 65 88Z" fill="rgba(138,144,112,0.30)" stroke="rgba(120,128,90,0.35)" stroke-width="0.5"/>
+        <path d="M95 66 C88 60 82 63 84 67 C88 73 95 70 95 66Z" fill="rgba(138,144,112,0.28)" stroke="rgba(120,128,90,0.32)" stroke-width="0.5"/>
+      </svg>
+    </div>
+    <div class="ss-corner ss-corner-tr" aria-hidden="true">
+      <svg viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0 180 C15 150 35 120 60 90 C80 68 105 55 130 38 C152 24 168 10 180 0"
+              stroke="rgba(140,106,56,0.90)" stroke-width="1.2" stroke-linecap="round"/>
+        <path d="M0 180 C10 162 22 144 42 124 C60 106 80 96 100 82 C118 70 138 56 155 38 C165 28 172 14 180 0"
+              stroke="rgba(140,106,56,0.60)" stroke-width="0.7" stroke-linecap="round"/>
+        <path d="M60 90 C52 82 42 78 34 72" stroke="rgba(140,106,56,0.55)" stroke-width="0.7" stroke-linecap="round"/>
+        <path d="M85 68 C78 62 70 60 62 56" stroke="rgba(140,106,56,0.50)" stroke-width="0.7" stroke-linecap="round"/>
+        <circle cx="34" cy="72" r="3.5" fill="rgba(212,184,120,0.70)" stroke="rgba(140,106,56,0.50)" stroke-width="0.5"/>
+        <circle cx="62" cy="56" r="3.0" fill="rgba(200,170,100,0.65)" stroke="rgba(140,106,56,0.45)" stroke-width="0.5"/>
+        <circle cx="47" cy="80" r="2.2" fill="rgba(224,196,140,0.58)" stroke="rgba(160,120,60,0.40)" stroke-width="0.4"/>
+      </svg>
+    </div>
+    <div class="ss-corner ss-corner-bl" aria-hidden="true">
+      <svg viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0 180 C15 150 35 120 60 90 C80 68 105 55 130 38 C152 24 168 10 180 0"
+              stroke="rgba(140,106,56,0.90)" stroke-width="1.2" stroke-linecap="round"/>
+        <path d="M60 90 C52 82 42 78 34 72" stroke="rgba(140,106,56,0.55)" stroke-width="0.7" stroke-linecap="round"/>
+        <circle cx="34" cy="72" r="3.5" fill="rgba(212,184,120,0.70)" stroke="rgba(140,106,56,0.50)" stroke-width="0.5"/>
+        <circle cx="47" cy="80" r="2.2" fill="rgba(224,196,140,0.58)" stroke="rgba(160,120,60,0.40)" stroke-width="0.4"/>
+      </svg>
+    </div>
+    <div class="ss-corner ss-corner-br" aria-hidden="true">
+      <svg viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0 180 C15 150 35 120 60 90 C80 68 105 55 130 38 C152 24 168 10 180 0"
+              stroke="rgba(140,106,56,0.90)" stroke-width="1.2" stroke-linecap="round"/>
+        <path d="M60 90 C52 82 42 78 34 72" stroke="rgba(140,106,56,0.55)" stroke-width="0.7" stroke-linecap="round"/>
+        <circle cx="34" cy="72" r="3.5" fill="rgba(212,184,120,0.70)" stroke="rgba(140,106,56,0.50)" stroke-width="0.5"/>
+      </svg>
+    </div>
+
+    <!-- Premium hallmark badge -->
+    <div class="premium-hallmark" aria-label="Premium private edition">
+      <span class="ph-foil">PRIVATE&nbsp;COLLECTION</span>
+      <span class="ph-dot" aria-hidden="true">✦</span>
+      <span class="ph-edition">Nº&nbsp;001 · Limited Edition</span>
+    </div>
+
+    <!-- Eyebrow -->
+    <div class="ss-eyebrow-line" aria-hidden="true">
+      <div class="ssel-rule"></div>
+      <span class="ss-eyebrow">You Are Cordially Invited</span>
+      <div class="ssel-rule"></div>
+    </div>
+
+    <!-- ═══ THE WHITE CARD WITH WAX SEAL ═══ -->
+    <div class="scroll-wrap" id="envelopeWrap" (click)="openEnvelope(bgMusic)">
+
+      <!-- Card top edge -->
+      <div class="scroll-rod" aria-hidden="true"></div>
+
+      <!-- Card body -->
+      <div class="scroll-body">
+
+        <!-- Botanical sprig illustration in the upper half -->
+        <div class="scroll-body-botanical">
+          <svg viewBox="0 0 240 160" fill="none" xmlns="http://www.w3.org/2000/svg" width="220" style="position:absolute;bottom:0;left:50%;transform:translateX(-50%)">
+            <!-- Central main stem -->
+            <path d="M120 155 C120 140 119 125 118 110 C117 95 115 80 118 62 C120 48 123 36 120 20"
+                  stroke="rgba(140,106,56,0.65)" stroke-width="1.4" stroke-linecap="round"/>
+            <!-- Left main branch -->
+            <path d="M118 95 C108 88 94 84 80 80 C68 77 56 76 44 70"
+                  stroke="rgba(140,106,56,0.58)" stroke-width="1.1" stroke-linecap="round"/>
+            <!-- Left sub-branches -->
+            <path d="M100 86 C92 80 84 75 76 68"
+                  stroke="rgba(140,106,56,0.50)" stroke-width="0.8" stroke-linecap="round"/>
+            <path d="M80 80 C74 72 72 63 74 54"
+                  stroke="rgba(140,106,56,0.48)" stroke-width="0.8" stroke-linecap="round"/>
+            <path d="M44 70 C38 64 32 60 26 54"
+                  stroke="rgba(140,106,56,0.45)" stroke-width="0.7" stroke-linecap="round"/>
+            <!-- Right main branch -->
+            <path d="M118 95 C128 88 142 84 156 80 C168 77 180 76 192 70"
+                  stroke="rgba(140,106,56,0.58)" stroke-width="1.1" stroke-linecap="round"/>
+            <!-- Right sub-branches -->
+            <path d="M136 86 C144 80 152 75 160 68"
+                  stroke="rgba(140,106,56,0.50)" stroke-width="0.8" stroke-linecap="round"/>
+            <path d="M156 80 C162 72 164 63 162 54"
+                  stroke="rgba(140,106,56,0.48)" stroke-width="0.8" stroke-linecap="round"/>
+            <path d="M192 70 C198 64 204 60 210 54"
+                  stroke="rgba(140,106,56,0.45)" stroke-width="0.7" stroke-linecap="round"/>
+            <!-- Upper left stems -->
+            <path d="M118 72 C110 65 100 60 90 52 C82 46 72 42 64 34"
+                  stroke="rgba(140,106,56,0.52)" stroke-width="0.9" stroke-linecap="round"/>
+            <path d="M90 52 C84 44 80 36 82 26"
+                  stroke="rgba(140,106,56,0.45)" stroke-width="0.7" stroke-linecap="round"/>
+            <!-- Upper right stems -->
+            <path d="M118 72 C126 65 136 60 146 52 C154 46 164 42 172 34"
+                  stroke="rgba(140,106,56,0.52)" stroke-width="0.9" stroke-linecap="round"/>
+            <path d="M146 52 C152 44 156 36 154 26"
+                  stroke="rgba(140,106,56,0.45)" stroke-width="0.7" stroke-linecap="round"/>
+            <!-- Tiny buds — left side -->
+            <circle cx="44" cy="70" r="3.8" fill="rgba(212,184,120,0.78)" stroke="rgba(140,106,56,0.52)" stroke-width="0.6"/>
+            <circle cx="26" cy="54" r="3.2" fill="rgba(224,196,140,0.72)" stroke="rgba(140,106,56,0.48)" stroke-width="0.5"/>
+            <circle cx="76" cy="68" r="3.2" fill="rgba(200,170,100,0.72)" stroke="rgba(140,106,56,0.50)" stroke-width="0.5"/>
+            <circle cx="74" cy="54" r="2.8" fill="rgba(212,184,120,0.68)" stroke="rgba(140,106,56,0.46)" stroke-width="0.5"/>
+            <circle cx="64" cy="34" r="2.8" fill="rgba(200,170,100,0.68)" stroke="rgba(140,106,56,0.46)" stroke-width="0.5"/>
+            <circle cx="82" cy="26" r="2.5" fill="rgba(224,196,140,0.65)" stroke="rgba(160,120,60,0.42)" stroke-width="0.4"/>
+            <!-- Tiny buds — right side -->
+            <circle cx="192" cy="70" r="3.8" fill="rgba(212,184,120,0.78)" stroke="rgba(140,106,56,0.52)" stroke-width="0.6"/>
+            <circle cx="210" cy="54" r="3.2" fill="rgba(224,196,140,0.72)" stroke="rgba(140,106,56,0.48)" stroke-width="0.5"/>
+            <circle cx="160" cy="68" r="3.2" fill="rgba(200,170,100,0.72)" stroke="rgba(140,106,56,0.50)" stroke-width="0.5"/>
+            <circle cx="162" cy="54" r="2.8" fill="rgba(212,184,120,0.68)" stroke="rgba(140,106,56,0.46)" stroke-width="0.5"/>
+            <circle cx="172" cy="34" r="2.8" fill="rgba(200,170,100,0.68)" stroke="rgba(140,106,56,0.46)" stroke-width="0.5"/>
+            <circle cx="154" cy="26" r="2.5" fill="rgba(224,196,140,0.65)" stroke="rgba(160,120,60,0.42)" stroke-width="0.4"/>
+            <!-- Top bud -->
+            <circle cx="120" cy="20" r="3.2" fill="rgba(212,184,120,0.78)" stroke="rgba(140,106,56,0.52)" stroke-width="0.6"/>
+            <!-- Small scatter buds -->
+            <circle cx="58" cy="77" r="2.0" fill="rgba(224,196,140,0.60)" stroke="rgba(160,120,60,0.38)" stroke-width="0.4"/>
+            <circle cx="90" cy="62" r="2.0" fill="rgba(212,184,120,0.58)" stroke="rgba(140,106,56,0.36)" stroke-width="0.4"/>
+            <circle cx="106" cy="78" r="1.8" fill="rgba(200,170,100,0.55)" stroke="rgba(140,106,56,0.34)" stroke-width="0.4"/>
+            <circle cx="130" cy="78" r="1.8" fill="rgba(200,170,100,0.55)" stroke="rgba(140,106,56,0.34)" stroke-width="0.4"/>
+            <circle cx="178" cy="62" r="2.0" fill="rgba(212,184,120,0.58)" stroke="rgba(140,106,56,0.36)" stroke-width="0.4"/>
+            <!-- Tiny leaves -->
+            <path d="M55 74 C48 68 42 70 44 75 C47 81 55 79 55 74Z" fill="rgba(138,144,112,0.32)" stroke="rgba(120,128,90,0.36)" stroke-width="0.4"/>
+            <path d="M88 60 C82 54 76 56 78 61 C81 67 88 65 88 60Z" fill="rgba(138,144,112,0.30)" stroke="rgba(120,128,90,0.34)" stroke-width="0.4"/>
+            <path d="M152 72 C158 68 164 70 162 75 C159 81 152 79 152 72Z" fill="rgba(138,144,112,0.32)" stroke="rgba(120,128,90,0.36)" stroke-width="0.4"/>
+          </svg>
+
+          <!-- Wax seal — over the botanical/twine crossing point -->
+          <div class="scroll-seal">
+            <svg class="scroll-seal-svg" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Wax seal base — antique bronze/amber -->
+              <circle cx="40" cy="40" r="37" fill="#7a5228"/>
+              <circle cx="40" cy="40" r="37" fill="url(#waxGrad)"/>
+              <!-- Wax drip texture — uneven edge -->
+              <path d="M40 3 C44 3 48 4 52 6 C56 8 60 10 63 13 C66 16 68 19 70 22 C72 26 74 30 74 34 C75 37 76 40 76 43 C76 47 75 50 74 53 C72 57 70 60 67 63 C64 66 61 68 58 70 C54 72 50 74 46 75 C43 76 40 76 37 76 C33 75 30 74 27 72 C23 70 20 68 17 65 C14 62 12 59 10 56 C8 52 7 48 6 44 C5 41 4 38 4 35 C4 31 5 28 7 25 C9 21 11 18 14 15 C17 12 20 10 24 8 C28 6 32 4 36 3 C37.3 2.8 38.7 2.7 40 3Z"
+                    fill="url(#waxGrad2)" opacity="0.85"/>
+              <!-- Inner ring border -->
+              <circle cx="40" cy="40" r="33" fill="none" stroke="rgba(212,170,90,0.35)" stroke-width="0.8"/>
+              <circle cx="40" cy="40" r="29" fill="none" stroke="rgba(212,170,90,0.25)" stroke-width="0.6"/>
+              <!-- "Save the Date" text area — outer wreath ring -->
+              <path d="M40 40 m-25 0 a25 25 0 1 1 50 0 a25 25 0 1 1 -50 0" fill="none"/>
+              <!-- Leaf wreath decoration around edge -->
+              <path d="M40 15 C42 12 44 13 43 15 C42 17 40 16 40 15Z" fill="rgba(200,160,60,0.55)"/>
+              <path d="M40 15 C38 12 36 13 37 15 C38 17 40 16 40 15Z" fill="rgba(200,160,60,0.50)"/>
+              <path d="M55 20 C57 18 59 19 58 21 C57 23 55 22 55 20Z" fill="rgba(200,160,60,0.50)" transform="rotate(25 40 40)"/>
+              <path d="M55 20 C53 18 51 19 52 21 C53 23 55 22 55 20Z" fill="rgba(200,160,60,0.45)" transform="rotate(25 40 40)"/>
+              <path d="M55 20 C57 18 59 19 58 21 C57 23 55 22 55 20Z" fill="rgba(200,160,60,0.50)" transform="rotate(-25 40 40)"/>
+              <path d="M55 20 C53 18 51 19 52 21 C53 23 55 22 55 20Z" fill="rgba(200,160,60,0.45)" transform="rotate(-25 40 40)"/>
+              <path d="M55 20 C57 18 59 19 58 21 C57 23 55 22 55 20Z" fill="rgba(200,160,60,0.50)" transform="rotate(50 40 40)"/>
+              <path d="M55 20 C53 18 51 19 52 21 C53 23 55 22 55 20Z" fill="rgba(200,160,60,0.45)" transform="rotate(50 40 40)"/>
+              <path d="M55 20 C57 18 59 19 58 21 C57 23 55 22 55 20Z" fill="rgba(200,160,60,0.50)" transform="rotate(-50 40 40)"/>
+              <path d="M55 20 C53 18 51 19 52 21 C53 23 55 22 55 20Z" fill="rgba(200,160,60,0.45)" transform="rotate(-50 40 40)"/>
+              <path d="M55 20 C57 18 59 19 58 21 C57 23 55 22 55 20Z" fill="rgba(200,160,60,0.50)" transform="rotate(75 40 40)"/>
+              <path d="M55 20 C53 18 51 19 52 21 C53 23 55 22 55 20Z" fill="rgba(200,160,60,0.45)" transform="rotate(-75 40 40)"/>
+              <path d="M55 20 C57 18 59 19 58 21 C57 23 55 22 55 20Z" fill="rgba(200,160,60,0.50)" transform="rotate(100 40 40)"/>
+              <path d="M55 20 C53 18 51 19 52 21 C53 23 55 22 55 20Z" fill="rgba(200,160,60,0.45)" transform="rotate(-100 40 40)"/>
+              <!-- "Save the date" text — italic script style in gold -->
+              <text x="40" y="34" font-family="Georgia, serif" font-style="italic" font-size="6" fill="rgba(240,210,120,0.95)" text-anchor="middle">Save</text>
+              <text x="40" y="41" font-family="Georgia, serif" font-style="italic" font-size="5.5" fill="rgba(240,210,120,0.90)" text-anchor="middle">the</text>
+              <text x="40" y="49" font-family="Georgia, serif" font-style="italic" font-size="6" fill="rgba(240,210,120,0.95)" text-anchor="middle">date</text>
+              <!-- Gradient defs -->
+              <defs>
+                <radialGradient id="waxGrad" cx="38%" cy="30%" r="65%">
+                  <stop offset="0%" stop-color="#c49050"/>
+                  <stop offset="30%" stop-color="#9a6c30"/>
+                  <stop offset="65%" stop-color="#7a5228"/>
+                  <stop offset="100%" stop-color="#5c3a18"/>
+                </radialGradient>
+                <radialGradient id="waxGrad2" cx="40%" cy="28%" r="70%">
+                  <stop offset="0%" stop-color="#d4a060" stop-opacity="0.7"/>
+                  <stop offset="50%" stop-color="#9a6c30" stop-opacity="0.3"/>
+                  <stop offset="100%" stop-color="#5c3a18" stop-opacity="0"/>
+                </radialGradient>
+              </defs>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Text area below the botanical/wax seal -->
+        <div class="scroll-body-text">
+          <p class="ss-tagline">The Wedding of</p>
+          <p class="ss-names-preview">{{ event.groom }} &amp; {{ event.bride }}</p>
+
+          <!-- Thin divider line -->
+          <svg viewBox="0 0 200 6" fill="none" width="150" style="position:relative;z-index:5;margin:4px 0;opacity:0.45">
+            <line x1="0" y1="3" x2="80" y2="3" stroke="rgba(140,106,56,0.55)" stroke-width="0.7"/>
+            <circle cx="100" cy="3" r="2.2" fill="rgba(180,140,60,0.70)"/>
+            <line x1="120" y1="3" x2="200" y2="3" stroke="rgba(140,106,56,0.55)" stroke-width="0.7"/>
+          </svg>
+        </div>
+
+        <!-- Calendar date display — matching the physical card exactly -->
+        <div class="scroll-body-calendar">
+          <div class="sbc-month-row">
+            <span class="sbc-month">{{ event.date | date:'MMMM' }}</span>
+            <span class="sbc-year">{{ event.date | date:'yyyy' }}</span>
+          </div>
+          <div class="sbc-grid">
+            <div class="sbc-weekdays">
+              <span class="sbc-wd">S</span>
+              <span class="sbc-wd">M</span>
+              <span class="sbc-wd">T</span>
+              <span class="sbc-wd">W</span>
+              <span class="sbc-wd">T</span>
+              <span class="sbc-wd">F</span>
+              <span class="sbc-wd">S</span>
+            </div>
+            <div class="sbc-days">
+  <ng-container *ngFor="let cell of getCalendarCells()">
+    <div class="sbc-day"
+         [class.sbc-event-day]="cell && cell.toString() === (event.date | date:'d')"
+         [class.sbc-empty]="!cell">
+      <span *ngIf="cell">{{ cell }}</span>
+      <span class="sbc-heart" *ngIf="cell && cell.toString() === (event.date | date:'d')">♥</span>
+    </div>
+  </ng-container>
+</div>
+          </div>
+        </div>
+
+      </div><!-- end scroll-body -->
+
+      <!-- Card bottom edge -->
+      <div class="scroll-rod-bottom" aria-hidden="true"></div>
+
+    </div><!-- end scroll-wrap -->
+
+    <!-- Tap hint -->
+    <div class="scroll-hint" id="wsHint">
+      <div class="sh-arrow" aria-hidden="true"></div>
+      <span class="sh-text">Tap to open</span>
+    </div>
+
+  </div><!-- end scroll-scene -->
+
+  <!-- Reveal transition overlay -->
+  <div class="burn-overlay" id="filmBurn" aria-hidden="true"></div>
+
+  <!-- ══════════════════════════════════════════════════════
+       MAIN INVITATION CONTENT
+       ══════════════════════════════════════════════════════ -->
+  <div class="invitation-reveal" id="letterReveal">
+
+    <!-- Background photo slideshow -->
+    <div class="bg-stage" aria-hidden="true">
+      <div *ngFor="let slide of bgSlides; let i = index"
+           class="bg-slide"
+           [class.bg-active]="isBgActive(i)"
+           [style.background-image]="'url(' + slide + ')'">
+      </div>
+      <div class="bg-overlay"></div>
+    </div>
+
+    <!-- ════════════════════
+         HERO SECTION
+         ════════════════════ -->
+    <section class="hero">
+
+      <!-- Top botanical arch ornament — replaces mandala -->
+      <div class="hero-mandala-top" aria-hidden="true">
+        <svg viewBox="0 0 360 180" fill="none" xmlns="http://www.w3.org/2000/svg" width="100%">
+          <!-- Delicate concentric arcs -->
+          <path d="M10 180 A170 170 0 0 1 350 180" stroke="rgba(140,106,56,0.35)" stroke-width="0.8" fill="none"/>
+          <path d="M25 180 A155 155 0 0 1 335 180" stroke="rgba(140,106,56,0.28)" stroke-width="0.6" fill="none"/>
+          <path d="M45 180 A135 135 0 0 1 315 180" stroke="rgba(140,106,56,0.32)" stroke-width="0.7" fill="none"/>
+          <path d="M65 180 A115 115 0 0 1 295 180" stroke="rgba(140,106,56,0.25)" stroke-width="0.5" fill="none"/>
+          <!-- Botanical sprigs along the arc -->
+          <path d="M180 10 C178 22 176 36 174 50" stroke="rgba(140,106,56,0.40)" stroke-width="0.8" stroke-linecap="round"/>
+          <path d="M174 36 C168 30 162 28 156 26" stroke="rgba(140,106,56,0.35)" stroke-width="0.6" stroke-linecap="round"/>
+          <path d="M174 36 C180 30 186 28 192 26" stroke="rgba(140,106,56,0.35)" stroke-width="0.6" stroke-linecap="round"/>
+          <circle cx="156" cy="26" r="2.5" fill="rgba(212,184,120,0.65)" stroke="rgba(140,106,56,0.45)" stroke-width="0.5"/>
+          <circle cx="192" cy="26" r="2.5" fill="rgba(212,184,120,0.65)" stroke="rgba(140,106,56,0.45)" stroke-width="0.5"/>
+          <circle cx="180" cy="10" r="2.8" fill="rgba(200,170,100,0.70)" stroke="rgba(140,106,56,0.48)" stroke-width="0.5"/>
+          <!-- Radial spokes -->
+          <line x1="180" y1="180" x2="40" y2="60" stroke="rgba(140,106,56,0.14)" stroke-width="0.4"/>
+          <line x1="180" y1="180" x2="320" y2="60" stroke="rgba(140,106,56,0.14)" stroke-width="0.4"/>
+          <line x1="180" y1="180" x2="90" y2="24" stroke="rgba(140,106,56,0.12)" stroke-width="0.3"/>
+          <line x1="180" y1="180" x2="270" y2="24" stroke="rgba(140,106,56,0.12)" stroke-width="0.3"/>
+        </svg>
+      </div>
+
+      <p class="hero-eyebrow">Sacred Wedding Invitation</p>
+
+      <div class="hero-divider-line" aria-hidden="true">
+        <div class="hdl-rule"></div>
+        <!-- Small bud divider -->
+        <svg viewBox="0 0 14 14" fill="none" width="12" style="opacity:0.55">
+          <circle cx="7" cy="7" r="4.5" fill="rgba(140,106,56,0.55)" stroke="rgba(180,140,60,0.65)" stroke-width="0.7"/>
+          <circle cx="7" cy="7" r="2" fill="rgba(212,184,120,0.80)"/>
+        </svg>
+        <div class="hdl-rule"></div>
+      </div>
+
+      <!-- Names (typewriter animated) -->
+      <div class="hero-couple">
+        <span class="hero-groom">{{ displayGroom }}<span class="hero-cursor" *ngIf="displayGroom.length < (event.groom?.length || 0)" aria-hidden="true">|</span></span>
+        <span class="hero-amp">&amp;</span>
+        <span class="hero-bride">{{ displayBride }}<span class="hero-cursor" *ngIf="displayBride.length < (event.bride?.length || 0) && displayGroom.length >= (event.groom?.length || 0)" aria-hidden="true">|</span></span>
+      </div>
+
+      <!-- Lineage -->
+      <div *ngIf="event.parents" class="hero-lineage fade-up">
+        <div *ngIf="event.parents.groom" class="hl-side">
+          <span class="hl-relation">Son of</span>
+          <span class="hl-parent">{{ event.parents.groom }}</span>
+        </div>
+        <div *ngIf="event.parents.bride" class="hl-side">
+          <span class="hl-relation">Daughter of</span>
+          <span class="hl-parent">{{ event.parents.bride }}</span>
+        </div>
+      </div>
+
+      <p class="hero-invitation-text">cordially request the pleasure of your company</p>
+
+      <!-- Date badge — calendar style -->
+      <div class="hero-date-badge fade-up">
+        <span class="hdb-day">{{ event.date | date:'EEEE' }}</span>
+        <div class="hdb-date">
+          {{ event.date | date:'d' }}
+          <sup class="hdb-date-sup">{{ getDaySuffix() }}</sup>
+        </div>
+        <span class="hdb-month-year">{{ event.date | date:'MMMM yyyy' }}</span>
+        <span class="hdb-time">09 : 00 AM — 04 : 00 PM</span>
+      </div>
+
+      <!-- Bottom botanical ornament -->
+      <div class="hero-lotus-bottom fade-up" aria-hidden="true">
+        <svg viewBox="0 0 180 28" fill="none" width="160" xmlns="http://www.w3.org/2000/svg">
+          <line x1="0" y1="14" x2="64" y2="14" stroke="rgba(140,106,56,0.38)" stroke-width="0.7"/>
+          <!-- Three bud cluster -->
+          <path d="M76 14 C76 10 78 7 80 7 C82 7 84 10 84 14" stroke="rgba(140,106,56,0.48)" stroke-width="0.7" fill="none" stroke-linecap="round"/>
+          <circle cx="80" cy="7" r="2.5" fill="rgba(212,184,120,0.72)" stroke="rgba(140,106,56,0.50)" stroke-width="0.5"/>
+          <path d="M84 14 C86 10 88 8 90 8 C92 8 93 10 92 14" stroke="rgba(140,106,56,0.45)" stroke-width="0.6" fill="none" stroke-linecap="round"/>
+          <circle cx="89" cy="8" r="2.2" fill="rgba(200,170,100,0.68)" stroke="rgba(140,106,56,0.46)" stroke-width="0.5"/>
+          <path d="M92 14 C94 11 96 9 98 9 C99.5 9 100 11 100 14" stroke="rgba(140,106,56,0.42)" stroke-width="0.6" fill="none" stroke-linecap="round"/>
+          <circle cx="97" cy="9" r="2.0" fill="rgba(224,196,140,0.65)" stroke="rgba(160,120,60,0.42)" stroke-width="0.4"/>
+          <!-- Mirror right -->
+          <path d="M104 14 C104 10 106 7 108 7 C110 7 112 10 112 14" stroke="rgba(140,106,56,0.45)" stroke-width="0.6" fill="none" stroke-linecap="round"/>
+          <circle cx="108" cy="7" r="2.0" fill="rgba(200,170,100,0.68)" stroke="rgba(140,106,56,0.46)" stroke-width="0.5"/>
+          <path d="M88 14 C90 11 91 10 92 11" stroke="rgba(140,106,56,0.30)" stroke-width="0.5" fill="none" stroke-linecap="round"/>
+          <circle cx="90" cy="14" r="0" />
+          <line x1="116" y1="14" x2="180" y2="14" stroke="rgba(140,106,56,0.38)" stroke-width="0.7"/>
+        </svg>
+      </div>
+
+      <!-- Scroll indicator -->
+      <div class="scroll-indicator fade-up" aria-hidden="true">
+        <div class="si-line"></div>
+        <div class="si-dot"></div>
+      </div>
+
+    </section>
+
+      <!-- ══ BRONZE DIVIDER ══ -->
+    <div class="gold-divider fade-up" aria-hidden="true">
+      <div class="gd-line"></div>
+      <div class="gd-lotus">
+        <!-- Bud cluster divider -->
+        <svg viewBox="0 0 36 16" fill="none" width="30">
+          <circle cx="8" cy="8" r="3" fill="rgba(140,106,56,0.42)" stroke="rgba(180,140,60,0.55)" stroke-width="0.7"/>
+          <circle cx="18" cy="6" r="3.5" fill="rgba(140,106,56,0.50)" stroke="rgba(180,140,60,0.62)" stroke-width="0.7"/>
+          <circle cx="28" cy="8" r="3" fill="rgba(140,106,56,0.42)" stroke="rgba(180,140,60,0.55)" stroke-width="0.7"/>
+          <line x1="0" y1="10" x2="6" y2="8" stroke="rgba(140,106,56,0.40)" stroke-width="0.6" stroke-linecap="round"/>
+          <line x1="30" y1="8" x2="36" y2="10" stroke="rgba(140,106,56,0.40)" stroke-width="0.6" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="gd-line"></div>
+    </div>
+
+    <!-- ═══════════════════════════════════════
+     PORUWA CEREMONY SECTION
+     ═══════════════════════════════════════ -->
+<div class="poruwa-ceremony-card">
+  
+  <div class="pc-top-line">
+    <span></span>
+    <p>Wedding Ritual</p>
+    <span></span>
+  </div>
+
+  <div class="pc-icon-wrap">
+    <div class="pc-icon-ring"></div>
+
+    <!-- Elegant lotus / poruwa style icon -->
+    <svg viewBox="0 0 120 120" class="pc-icon" fill="none">
+      <circle cx="60" cy="60" r="54"
+              stroke="rgba(140,106,56,0.20)"
+              stroke-width="1.2"/>
+
+      <path d="M60 38
+               C68 48 72 56 72 66
+               C72 77 66 84 60 88
+               C54 84 48 77 48 66
+               C48 56 52 48 60 38Z"
+            fill="rgba(200,170,100,0.20)"
+            stroke="rgba(140,106,56,0.65)"
+            stroke-width="1.5"/>
+
+      <path d="M60 28
+               C64 34 66 40 60 46
+               C54 40 56 34 60 28Z"
+            fill="rgba(212,184,120,0.30)"
+            stroke="rgba(140,106,56,0.55)"
+            stroke-width="1.2"/>
+
+      <path d="M42 60
+               C48 56 54 58 58 64
+               C50 68 44 68 42 60Z"
+            fill="rgba(212,184,120,0.20)"
+            stroke="rgba(140,106,56,0.50)"
+            stroke-width="1.1"/>
+
+      <path d="M78 60
+               C72 56 66 58 62 64
+               C70 68 76 68 78 60Z"
+            fill="rgba(212,184,120,0.20)"
+            stroke="rgba(140,106,56,0.50)"
+            stroke-width="1.1"/>
+    </svg>
+  </div>
+
+  <h3 class="pc-title">Poruwa Ceremony</h3>
+
+  <div class="pc-time-wrap">
+    <span class="pc-time-label">Begins At</span>
+    <div class="pc-time">10.08 AM</div>
+  </div>
+
+  <p class="pc-description">
+    With blessings, traditions, and sacred rituals,
+    the couple will begin their new journey together.
+  </p>
+
+</div>
+
+    <!-- ══ BRONZE DIVIDER ══ -->
+    <div class="gold-divider fade-up" aria-hidden="true">
+      <div class="gd-line"></div>
+      <div class="gd-lotus">
+        <!-- Bud cluster divider -->
+        <svg viewBox="0 0 36 16" fill="none" width="30">
+          <circle cx="8" cy="8" r="3" fill="rgba(140,106,56,0.42)" stroke="rgba(180,140,60,0.55)" stroke-width="0.7"/>
+          <circle cx="18" cy="6" r="3.5" fill="rgba(140,106,56,0.50)" stroke="rgba(180,140,60,0.62)" stroke-width="0.7"/>
+          <circle cx="28" cy="8" r="3" fill="rgba(140,106,56,0.42)" stroke="rgba(180,140,60,0.55)" stroke-width="0.7"/>
+          <line x1="0" y1="10" x2="6" y2="8" stroke="rgba(140,106,56,0.40)" stroke-width="0.6" stroke-linecap="round"/>
+          <line x1="30" y1="8" x2="36" y2="10" stroke="rgba(140,106,56,0.40)" stroke-width="0.6" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="gd-line"></div>
+    </div>
+
+    <!-- ════════════════════
+         OUR STORY
+         ════════════════════ -->
+    <section *ngIf="event.story?.length" class="inv-section fade-up">
+      <div class="inv-card">
+        <p class="card-eyebrow">A Journey Written in Time</p>
+        <p class="card-title">Our Story</p>
+        <div class="story-timeline">
+          <div *ngFor="let s of event.story; let i = index" class="st-item">
+            <div class="st-dot" aria-hidden="true"></div>
+            <h3 class="st-title">{{ s.title }}</h3>
+            <p class="st-body">{{ s.description }}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ DIVIDER (conditional) ══ -->
+    <div *ngIf="event.story?.length" class="gold-divider fade-up" aria-hidden="true">
+      <div class="gd-line"></div>
+      <div class="gd-lotus">
+        <svg viewBox="0 0 36 16" fill="none" width="30">
+          <circle cx="8" cy="8" r="3" fill="rgba(140,106,56,0.42)" stroke="rgba(180,140,60,0.55)" stroke-width="0.7"/>
+          <circle cx="18" cy="6" r="3.5" fill="rgba(140,106,56,0.50)" stroke="rgba(180,140,60,0.62)" stroke-width="0.7"/>
+          <circle cx="28" cy="8" r="3" fill="rgba(140,106,56,0.42)" stroke="rgba(180,140,60,0.55)" stroke-width="0.7"/>
+        </svg>
+      </div>
+      <div class="gd-line"></div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════
+         PREMIUM · LOVE STORY · PRIVATE COLLECTION GALLERY
+         (replaces the standard gallery for premium clients)
+         ════════════════════════════════════════════════ -->
+    <section class="inv-section fade-up pc-gallery-section">
+      <div class="inv-card pc-gallery-card">
+
+        <!-- Top hallmark -->
+        <div class="pcg-hallmark" aria-hidden="true">
+          <span class="pcg-hallmark-rule"></span>
+          <span class="pcg-hallmark-mark">✦  PRIVATE  COLLECTION  ✦</span>
+          <span class="pcg-hallmark-rule"></span>
+        </div>
+
+        <p class="card-eyebrow">Illustrated Love Story</p>
+        <p class="card-title">A Quiet Romance,<br><em>in Six Chapters</em></p>
+
+        <p class="pcg-deck">
+          A bespoke illustrated edition — created exclusively for our cherished guests.
+          Tap a chapter to turn the page.
+        </p>
+
+        <!-- Featured artwork stage -->
+        <div class="pcg-stage">
+
+          <div class="pcg-frame">
+            <span class="pcg-corner pcg-corner-tl" aria-hidden="true"></span>
+            <span class="pcg-corner pcg-corner-tr" aria-hidden="true"></span>
+            <span class="pcg-corner pcg-corner-bl" aria-hidden="true"></span>
+            <span class="pcg-corner pcg-corner-br" aria-hidden="true"></span>
+
+            <div class="pcg-art-wrap">
+              <img *ngFor="let art of premiumArtworks; let i = index"
+                   class="pcg-art"
+                   [class.pcg-art-active]="i === featuredArtIndex"
+                   [src]="art.src"
+                   [alt]="art.title">
+              <div class="pcg-art-vignette" aria-hidden="true"></div>
+              <div class="pcg-art-grain" aria-hidden="true"></div>
+            </div>
+
+            <!-- Chapter caption plate -->
+            <div class="pcg-plate">
+              <span class="pcg-plate-chapter">{{ premiumArtworks[featuredArtIndex].chapter }}</span>
+              <h3 class="pcg-plate-title">{{ premiumArtworks[featuredArtIndex].title }}</h3>
+              <div class="pcg-plate-rule" aria-hidden="true"></div>
+              <p class="pcg-plate-caption">{{ premiumArtworks[featuredArtIndex].caption }}</p>
+            </div>
+
+            <!-- Navigation arrows -->
+            <button class="pcg-nav pcg-nav-prev"
+                    (click)="prevFeaturedArt()"
+                    aria-label="Previous chapter">‹</button>
+            <button class="pcg-nav pcg-nav-next"
+                    (click)="nextFeaturedArt()"
+                    aria-label="Next chapter">›</button>
+          </div>
+        </div>
+
+        <!-- Chapter index — thumbnail strip -->
+        <div class="pcg-strip" role="tablist" aria-label="Chapter index">
+          <button *ngFor="let art of premiumArtworks; let i = index"
+                  class="pcg-thumb"
+                  [class.pcg-thumb-active]="i === featuredArtIndex"
+                  role="tab"
+                  [attr.aria-selected]="i === featuredArtIndex"
+                  [attr.aria-label]="art.chapter + ' — ' + art.title"
+                  (click)="selectFeaturedArt(i)">
+            <span class="pcg-thumb-no">{{ i + 1 < 10 ? '0' + (i + 1) : (i + 1) }}</span>
+            <img [src]="art.src" [alt]="art.title" loading="lazy">
+            <span class="pcg-thumb-foil" aria-hidden="true"></span>
+          </button>
+        </div>
+
+        <!-- Bottom hallmark -->
+        <p class="pcg-mark-bottom">
+          <span class="pcg-mark-foil">Hand-illustrated · Numbered · Made for you</span>
+        </p>
+      </div>
+    </section>
+
+    <!-- ══ DIVIDER (conditional) ══ -->
+    <div class="gold-divider fade-up" aria-hidden="true">
+      <div class="gd-line"></div>
+      <div class="gd-lotus">
+        <svg viewBox="0 0 36 16" fill="none" width="30">
+          <circle cx="8" cy="8" r="3" fill="rgba(140,106,56,0.42)" stroke="rgba(180,140,60,0.55)" stroke-width="0.7"/>
+          <circle cx="18" cy="6" r="3.5" fill="rgba(140,106,56,0.50)" stroke="rgba(180,140,60,0.62)" stroke-width="0.7"/>
+          <circle cx="28" cy="8" r="3" fill="rgba(140,106,56,0.42)" stroke="rgba(180,140,60,0.55)" stroke-width="0.7"/>
+        </svg>
+      </div>
+      <div class="gd-line"></div>
+    </div>
+
+    <!-- ════════════════════
+         PROGRAMME / SCHEDULE
+         ════════════════════ -->
+    <section *ngIf="event.schedule?.length" class="inv-section fade-up">
+      <div class="inv-card">
+        <p class="card-eyebrow">Order of Celebration</p>
+        <p class="card-title">Programme</p>
+        <div class="story-timeline">
+          <div *ngFor="let item of event.schedule; let i = index"
+               class="st-item" [style.animation-delay.ms]="i * 80">
+            <div class="st-dot" aria-hidden="true"></div>
+            <h3 class="st-title" style="font-size:0.95rem">{{ item.time }}</h3>
+            <p class="st-body">{{ item.name }}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ DIVIDER ══ -->
+    <div class="gold-divider fade-up" aria-hidden="true">
+      <div class="gd-line"></div>
+      <div class="gd-lotus">
+        <svg viewBox="0 0 36 16" fill="none" width="30">
+          <circle cx="8" cy="8" r="3" fill="rgba(140,106,56,0.42)" stroke="rgba(180,140,60,0.55)" stroke-width="0.7"/>
+          <circle cx="18" cy="6" r="3.5" fill="rgba(140,106,56,0.50)" stroke="rgba(180,140,60,0.62)" stroke-width="0.7"/>
+          <circle cx="28" cy="8" r="3" fill="rgba(140,106,56,0.42)" stroke="rgba(180,140,60,0.55)" stroke-width="0.7"/>
+        </svg>
+      </div>
+      <div class="gd-line"></div>
+    </div>
+
+    <!-- ════════════════════
+         VENUE MAP
+         ════════════════════ -->
+    <section class="inv-section fade-up">
+      <div class="inv-card">
+        <p class="card-eyebrow">Sacred Location</p>
+        <p class="card-title">Venue</p>
+        <p class="venue-name">
+          <span class="venue-location">{{ event.location }}</span> -
+          <span class="venue-hall">(Thalia Grand Ballroom)</span>
+        </p>
+        <div class="map-wrap">
+          <div class="map-wrap-top" aria-hidden="true"></div>
+          <iframe [src]="mapUrl" allowfullscreen loading="lazy" title="Wedding venue map"></iframe>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ DIVIDER ══ -->
+    <div class="gold-divider fade-up" aria-hidden="true">
+      <div class="gd-line"></div>
+      <div class="gd-lotus">
+        <svg viewBox="0 0 36 16" fill="none" width="30">
+          <circle cx="8" cy="8" r="3" fill="rgba(140,106,56,0.42)" stroke="rgba(180,140,60,0.55)" stroke-width="0.7"/>
+          <circle cx="18" cy="6" r="3.5" fill="rgba(140,106,56,0.50)" stroke="rgba(180,140,60,0.62)" stroke-width="0.7"/>
+          <circle cx="28" cy="8" r="3" fill="rgba(140,106,56,0.42)" stroke="rgba(180,140,60,0.55)" stroke-width="0.7"/>
+        </svg>
+      </div>
+      <div class="gd-line"></div>
+    </div>
+
+    <!-- ════════════════════
+         RSVP
+         ════════════════════ -->
+    <section class="inv-section fade-up">
+      <p class="card-eyebrow" style="text-align:center;margin-bottom:4px">Your Presence is Requested</p>
+      <p class="card-title" style="text-align:center;margin-bottom:20px;font-family:var(--font-display);font-style:italic;font-weight:500;font-size:1.6rem;color:var(--taupe)">RSVP</p>
+
+      <ng-container *ngIf="!rsvpSubmitted; else rsvpDone">
+        <div class="rsvp-card">
+
+          <!-- RSVP Deadline -->
+          <div class="rsvp-deadline">
+            <span class="rsvp-deadline-icon">✿</span>
+            <span class="rsvp-deadline-text">Kindly reply by</span>
+            <span class="rsvp-deadline-date">27th June 2026</span>
+          </div>
+
+          <!-- Contact persons -->
+          <div class="rsvp-contacts">
+            <div class="rsvp-contact-card">
+              <span class="rsvp-contact-role">Contact</span>
+              <span class="rsvp-contact-name">Iresh</span>
+              <a href="tel:+94716392399" class="rsvp-contact-phone">+94 (71) 643 2239</a>
+            </div>
+            <div class="rsvp-contact-card">
+              <span class="rsvp-contact-role">Contact</span>
+              <span class="rsvp-contact-name">Hashitha</span>
+              <a href="tel:+94774823853" class="rsvp-contact-phone">+94 (70) 355 2884</a>
+            </div>
+          </div>
+
+          <!-- RSVP Form -->
+          <form class="rsvp-form" (submit)="submitRsvp($event)">
+            <div class="rf-field">
+              <label class="rf-label">Full Name</label>
+              <input name="name" type="text" class="rf-input" placeholder="Your full name" required>
+            </div>
+            <div class="rf-field">
+              <label class="rf-label">Phone Number</label>
+              <input name="phone" type="tel" class="rf-input" placeholder="+94 xx xxx xxxx" required>
+            </div>
+            <div class="rf-field">
+              <label class="rf-label">Number of Guests</label>
+              <input name="guestCount" type="number" min="1" value="1" class="rf-input">
+            </div>
+            <div class="rf-field">
+              <label class="rf-label">Will You Attend?</label>
+              <select name="attending" class="rf-select" required>
+                <option value="" disabled selected>Please select</option>
+                <option value="true">Yes, I will attend ✦</option>
+                <option value="false">Regretfully unable to attend</option>
+              </select>
+            </div>
+            <div class="rf-field">
+              <label class="rf-label">Message / Comment</label>
+              <textarea name="comment" class="rf-textarea" placeholder="A warm wish, a memory, or any special note for the couple…" rows="4"></textarea>
+            </div>
+            <button type="submit" class="rf-submit">
+              <span class="rfs-inner">
+                <svg viewBox="0 0 20 20" width="14" height="14" fill="none" aria-hidden="true">
+                  <ellipse cx="10" cy="10" rx="7" ry="5" fill="rgba(44,26,8,0.3)" stroke="rgba(44,26,8,0.6)" stroke-width="0.8"/>
+                  <ellipse cx="10" cy="10" rx="7" ry="5" fill="rgba(44,26,8,0.2)" stroke="rgba(44,26,8,0.5)" stroke-width="0.8" transform="rotate(60 10 10)"/>
+                  <ellipse cx="10" cy="10" rx="7" ry="5" fill="rgba(44,26,8,0.15)" stroke="rgba(44,26,8,0.45)" stroke-width="0.8" transform="rotate(120 10 10)"/>
+                  <circle cx="10" cy="10" r="2.5" fill="rgba(44,26,8,0.6)"/>
+                </svg>
+                <span class="rfs-label">Accept Invitation</span>
+              </span>
+            </button>
+          </form>
+
+        </div>
+      </ng-container>
+
+      <ng-template #rsvpDone>
+        <div class="rsvp-success">
+          <!-- Small botanical success icon -->
+          <div class="rs-lotus" aria-hidden="true">
+            <svg viewBox="0 0 64 64" fill="none" width="52">
+              <path d="M32 56 C32 46 31 36 30 27 C29 18 28 12 32 6" stroke="rgba(140,106,56,0.65)" stroke-width="1.4" stroke-linecap="round"/>
+              <path d="M30 34 C24 28 18 26 12 24" stroke="rgba(140,106,56,0.55)" stroke-width="1.0" stroke-linecap="round"/>
+              <path d="M30 34 C36 28 42 26 48 24" stroke="rgba(140,106,56,0.55)" stroke-width="1.0" stroke-linecap="round"/>
+              <path d="M30 24 C24 18 20 14 22 8" stroke="rgba(140,106,56,0.50)" stroke-width="0.9" stroke-linecap="round"/>
+              <path d="M30 24 C36 18 40 14 38 8" stroke="rgba(140,106,56,0.50)" stroke-width="0.9" stroke-linecap="round"/>
+              <circle cx="12" cy="24" r="3.5" fill="rgba(212,184,120,0.80)" stroke="rgba(140,106,56,0.55)" stroke-width="0.6"/>
+              <circle cx="48" cy="24" r="3.5" fill="rgba(212,184,120,0.80)" stroke="rgba(140,106,56,0.55)" stroke-width="0.6"/>
+              <circle cx="22" cy="8" r="3" fill="rgba(200,170,100,0.75)" stroke="rgba(140,106,56,0.52)" stroke-width="0.5"/>
+              <circle cx="38" cy="8" r="3" fill="rgba(200,170,100,0.75)" stroke="rgba(140,106,56,0.52)" stroke-width="0.5"/>
+              <circle cx="32" cy="6" r="2.5" fill="rgba(224,196,140,0.72)" stroke="rgba(160,120,60,0.48)" stroke-width="0.5"/>
+            </svg>
+          </div>
+          <h3 class="rs-title">With Gratitude</h3>
+          <p class="rs-body">Your reply has been graciously received.<br>We are honoured to celebrate with you.</p>
+        </div>
+      </ng-template>
+    </section>
+
+    <!-- MEMORY WALL -->
+    <section class="memory-wall fade-up">
+
+      <!-- Decorative top divider -->
+      <div class="mw-divider" aria-hidden="true">
+        <div class="mwd-line"></div>
+        <!-- Botanical bud cluster divider -->
+        <svg class="mwd-lotus" viewBox="0 0 72 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="20" cy="12" r="3.5" fill="rgba(140,106,56,0.40)" stroke="rgba(180,140,60,0.55)" stroke-width="0.7"/>
+          <circle cx="36" cy="9" r="4.5" fill="rgba(140,106,56,0.50)" stroke="rgba(180,140,60,0.65)" stroke-width="0.7"/>
+          <circle cx="52" cy="12" r="3.5" fill="rgba(140,106,56,0.40)" stroke="rgba(180,140,60,0.55)" stroke-width="0.7"/>
+          <line x1="36" y1="18" x2="36" y2="24" stroke="rgba(140,106,56,0.40)" stroke-width="0.8" stroke-linecap="round"/>
+          <path d="M36 18 C32 16 28 14 24 14" stroke="rgba(140,106,56,0.35)" stroke-width="0.6" stroke-linecap="round"/>
+          <path d="M36 18 C40 16 44 14 48 14" stroke="rgba(140,106,56,0.35)" stroke-width="0.6" stroke-linecap="round"/>
+        </svg>
+        <div class="mwd-line"></div>
+      </div>
+
+      <div class="memory-wall-inner">
+
+        <!-- Header -->
+        <div class="memory-header">
+          <p class="memory-eyebrow">
+            <span class="mwe-rule"></span>
+            Shared With Love
+            <span class="mwe-rule"></span>
+          </p>
+          <h2 class="memory-title">Memory Wall</h2>
+          <p class="memory-subtitle">
+            Leave a cherished memory or heartfelt wish<br>for the couple to treasure forever.
+          </p>
+        </div>
+
+        <!-- Upload Card -->
+        <div class="memory-upload-card">
+
+          <div class="muc-corner muc-corner-tl" aria-hidden="true"></div>
+          <div class="muc-corner muc-corner-tr" aria-hidden="true"></div>
+          <div class="muc-corner muc-corner-bl" aria-hidden="true"></div>
+          <div class="muc-corner muc-corner-br" aria-hidden="true"></div>
+
+          <p class="muc-label">Your Name</p>
+          <input
+            class="muc-input"
+            type="text"
+            placeholder="e.g. Amara &amp; Rohan"
+            [(ngModel)]="guestName">
+
+          <p class="muc-label">Your Message</p>
+          <textarea
+            class="muc-textarea"
+            rows="4"
+            placeholder="Write a lovely memory or wish..."
+            [(ngModel)]="memoryMessage">
+          </textarea>
+
+          <div class="muc-file-row">
+            <label class="muc-file-label" for="memoryFileInput">
+              <svg viewBox="0 0 20 20" fill="none" width="16" height="16">
+                <path d="M10 3v10M6 7l4-4 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M3 14v1a2 2 0 002 2h10a2 2 0 002-2v-1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+              <span>{{ memoryFileName || 'Attach a photo (optional)' }}</span>
+            </label>
+            <input
+              id="memoryFileInput"
+              type="file"
+              accept="image/*"
+              (change)="onMemoryFileChange($event)"
+              style="display:none">
+          </div>
+
+          <button
+            class="muc-btn"
+            (click)="uploadMemory()"
+            [disabled]="memoryUploading">
+            <span class="muc-btn-icon" aria-hidden="true">
+              <svg viewBox="0 0 20 20" fill="none" width="16" height="16">
+                <path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" fill="currentColor"/>
+              </svg>
+            </span>
+            {{ memoryUploading ? 'Sharing…' : 'Share Your Memory' }}
+          </button>
+
+        </div>
+
+        <!-- Gallery -->
+        <ng-container *ngIf="memories.length">
+
+          <div class="mw-gallery-header" aria-hidden="true">
+            <div class="mwgh-line"></div>
+            <span class="mwgh-label">{{ memories.length }} {{ memories.length === 1 ? 'Memory' : 'Memories' }}</span>
+            <div class="mwgh-line"></div>
+          </div>
+
+          <div class="memory-masonry">
+
+            <div
+              class="memory-card"
+              *ngFor="let memory of memories; let i = index"
+              [attr.data-index]="i">
+
+              <div class="mc-frame mc-frame-tl" aria-hidden="true"></div>
+              <div class="mc-frame mc-frame-tr" aria-hidden="true"></div>
+              <div class="mc-frame mc-frame-bl" aria-hidden="true"></div>
+              <div class="mc-frame mc-frame-br" aria-hidden="true"></div>
+
+              <div class="mc-photo-wrap" *ngIf="memory.imageUrl">
+                <img
+                  [src]="memory.imageUrl"
+                  alt="Memory by {{ memory.guestName }}"
+                  class="mc-photo"
+                  loading="lazy">
+                <div class="mc-photo-sheen" aria-hidden="true"></div>
+              </div>
+
+              <div class="mc-body">
+                <div class="mc-quote-mark" aria-hidden="true">"</div>
+                <p class="mc-message">{{ memory.message }}</p>
+                <div class="mc-attribution">
+                  <div class="mc-attr-rule"></div>
+                  <span class="mc-guest-name">{{ memory.guestName }}</span>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </ng-container>
+
+      </div>
+
+      <!-- Bottom divider -->
+      <div class="mw-divider mw-divider-bottom" aria-hidden="true">
+        <div class="mwd-line"></div>
+        <svg class="mwd-lotus" viewBox="0 0 72 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="20" cy="12" r="3.5" fill="rgba(140,106,56,0.40)" stroke="rgba(180,140,60,0.55)" stroke-width="0.7"/>
+          <circle cx="36" cy="9" r="4.5" fill="rgba(140,106,56,0.50)" stroke="rgba(180,140,60,0.65)" stroke-width="0.7"/>
+          <circle cx="52" cy="12" r="3.5" fill="rgba(140,106,56,0.40)" stroke="rgba(180,140,60,0.55)" stroke-width="0.7"/>
+        </svg>
+        <div class="mwd-line"></div>
+      </div>
+
+    </section>
+
+    <!-- ════════════════════
+         FOOTER
+         ════════════════════ -->
+    <footer class="inv-footer">
+
+      <!-- Small botanical motif -->
+      <div class="if-mandala-footer" aria-hidden="true">
+        <svg viewBox="0 0 80 80" fill="none" width="68">
+          <!-- Concentric rings -->
+          <circle cx="40" cy="40" r="36" stroke="rgba(140,106,56,1)" stroke-width="0.7"/>
+          <circle cx="40" cy="40" r="28" stroke="rgba(140,106,56,0.75)" stroke-width="0.5"/>
+          <circle cx="40" cy="40" r="20" stroke="rgba(140,106,56,0.65)" stroke-width="0.5"/>
+          <!-- Bud ornaments on outer ring -->
+          <circle cx="40" cy="4" r="2.5" fill="rgba(140,106,56,0.50)" transform="rotate(0 40 40)"/>
+          <circle cx="40" cy="4" r="2.5" fill="rgba(140,106,56,0.50)" transform="rotate(45 40 40)"/>
+          <circle cx="40" cy="4" r="2.5" fill="rgba(140,106,56,0.50)" transform="rotate(90 40 40)"/>
+          <circle cx="40" cy="4" r="2.5" fill="rgba(140,106,56,0.50)" transform="rotate(135 40 40)"/>
+          <circle cx="40" cy="4" r="2.5" fill="rgba(140,106,56,0.50)" transform="rotate(180 40 40)"/>
+          <circle cx="40" cy="4" r="2.5" fill="rgba(140,106,56,0.50)" transform="rotate(225 40 40)"/>
+          <circle cx="40" cy="4" r="2.5" fill="rgba(140,106,56,0.50)" transform="rotate(270 40 40)"/>
+          <circle cx="40" cy="4" r="2.5" fill="rgba(140,106,56,0.50)" transform="rotate(315 40 40)"/>
+          <!-- Centre -->
+          <circle cx="40" cy="40" r="8" fill="rgba(140,106,56,0.38)" stroke="rgba(180,140,60,0.55)" stroke-width="0.7"/>
+          <circle cx="40" cy="40" r="3.5" fill="rgba(200,160,80,0.60)"/>
+        </svg>
+      </div>
+
+      <h2 class="if-names">{{ event.groom }} &amp; {{ event.bride }}</h2>
+      <p class="if-date">{{ event.date | date:'d MMMM yyyy' }} · {{ event.location }}</p>
+
+      <div class="if-rule" aria-hidden="true">
+        <div class="ifr-line"></div>
+        <!-- Small bud divider -->
+        <svg viewBox="0 0 18 12" fill="none" width="16">
+          <circle cx="9" cy="6" r="3.5" fill="rgba(140,106,56,0.48)" stroke="rgba(180,140,60,0.60)" stroke-width="0.7"/>
+          <circle cx="9" cy="6" r="1.5" fill="rgba(212,184,120,0.75)"/>
+        </svg>
+        <div class="ifr-line"></div>
+      </div>
+
+      <p class="if-blessing">With love &amp; blessings</p>
+      <p class="if-contact">Powered by Linkora · 070 217 4799</p>
+
+      <!-- Premium hallmark seal -->
+      <div class="if-premium-seal" aria-label="Premium private edition">
+        <span class="ifps-rule"></span>
+        <span class="ifps-foil">PREMIUM&nbsp;·&nbsp;PRIVATE&nbsp;EDITION</span>
+        <span class="ifps-rule"></span>
+      </div>
+      <p class="if-premium-no">Numbered Nº&nbsp;001 · Crafted exclusively for our honoured guests</p>
+
+    </footer>
+
+    <!-- ════════════════════
+         LIGHTBOX
+         ════════════════════ -->
+    <div *ngIf="showLightbox"
+         class="lb-overlay"
+         (click)="closeLightbox($event)"
+         role="dialog" aria-modal="true" aria-label="Photo viewer">
+      <button class="lb-close" (click)="closeLightbox()" aria-label="Close">✕</button>
+      <div class="lb-stage" (click)="$event.stopPropagation()">
+        <img [src]="currentImage" class="lb-img" alt="Wedding photo">
+        <button class="lb-nav lb-prev" (click)="prevLightbox()" aria-label="Previous photo">‹</button>
+        <button class="lb-nav lb-next" (click)="nextLightbox()" aria-label="Next photo">›</button>
+      </div>
+      <div class="lb-counter" aria-live="polite">{{ currentIndex + 1 }} / {{ event.gallery?.length }}</div>
+    </div>
+
+  </div><!-- end invitation-reveal -->
+
+</ng-container>

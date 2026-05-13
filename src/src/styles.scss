@@ -1,0 +1,61 @@
+/* ═══════════════════════════════════════════════
+   GOOGLE FONTS — global import
+═══════════════════════════════════════════════ */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Outfit:wght@300;400;500;600&display=swap');
+
+/* ═══════════════════════════════════════════════
+   DESIGN TOKENS — must live here in styles.css
+   so Angular's view encapsulation doesn't block
+   :root from being read globally
+═══════════════════════════════════════════════ */
+:root {
+  /* Backgrounds */
+  --bg:           #07070d;
+  --bg-panel:     #0c0c15;
+  --bg-card:      #101020;
+  --bg-hover:     #141428;
+  --bg-active:    #161630;
+  --bg-glass:     rgba(255,255,255,0.025);
+
+  /* Borders */
+  --border:       rgba(255,255,255,0.055);
+  --border-md:    rgba(255,255,255,0.09);
+  --border-focus: rgba(212,175,55,0.55);
+
+  /* Gold palette */
+  --gold:         #d4af37;
+  --gold-light:   #eecf5a;
+  --gold-bright:  #f5df7a;
+  --gold-dim:     rgba(212,175,55,0.12);
+  --gold-glow:    rgba(212,175,55,0.18);
+
+  /* Accent blue */
+  --blue:         #5b9cf6;
+  --blue-dim:     rgba(91,156,246,0.12);
+
+  /* Semantic */
+  --green:        #4ade80;
+  --red:          #f87171;
+
+  /* Typography */
+  --text-1:       #f4f4f8;
+  --text-2:       #8888a0;
+  --text-3:       #484860;
+
+  /* Shapes */
+  --radius-xs:    4px;
+  --radius-sm:    8px;
+  --radius-md:    12px;
+  --radius-lg:    16px;
+  --radius-xl:    22px;
+
+  /* Font stacks */
+  --font-display: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+  --font-body:    'Outfit', system-ui, sans-serif;
+  --font-mono:    'JetBrains Mono', 'Fira Code', monospace;
+
+  /* Shadows */
+  --shadow-sm:    0 1px 3px rgba(0,0,0,0.5), 0 4px 16px rgba(0,0,0,0.35);
+  --shadow-gold:  0 2px 24px rgba(212,175,55,0.2);
+  --shadow-card:  0 0 0 1px var(--border), 0 8px 40px rgba(0,0,0,0.5);
+}
