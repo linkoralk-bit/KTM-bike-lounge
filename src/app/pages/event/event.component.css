@@ -1535,3 +1535,40 @@
   .cd-num { font-size: 1.2rem; }
   .inv-section { padding-left: 16px; padding-right: 16px; }
 }
+
+html,
+body {
+  overflow-x: hidden;
+  overscroll-behavior-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.invitation-reveal {
+  position: relative;
+  z-index: 5;
+  overflow-x: hidden;
+  overflow-y: auto;
+  touch-action: pan-y;
+}
+
+.scroll-scene {
+  touch-action: manipulation;
+}
+
+/* VERY IMPORTANT */
+.bg-stage,
+.petal-layer,
+.ss-ambient,
+.burn-overlay {
+  pointer-events: none !important;
+}
+
+.scroll-wrap,
+.scroll-body,
+.invitation-reveal,
+.hero,
+.inv-card {
+  transform: translateZ(0);
+  will-change: transform;
+  backface-visibility: hidden;
+}

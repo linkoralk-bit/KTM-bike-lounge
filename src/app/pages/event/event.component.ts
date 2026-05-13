@@ -179,8 +179,12 @@ export class EventComponent implements OnInit, OnDestroy, AfterViewInit {
     const sceneEl  = document.getElementById('envelopeScene');
     const burnEl   = document.getElementById('filmBurn');
 
-    if (!wrap || this.isOpening) return;
-    this.isOpening = true;
+    if (!wrap || this.isOpening || wrap.classList.contains('opened-mobile')) {
+  return;
+}
+
+this.isOpening = true;
+wrap.classList.add('opened-mobile');
 
     wrap.classList.add('scroll-opened');
     if (hint) hint.style.opacity = '0';
@@ -198,6 +202,15 @@ export class EventComponent implements OnInit, OnDestroy, AfterViewInit {
         letterEl.style.display = 'block';
         letterEl.getBoundingClientRect();
         letterEl.classList.add('revealed');
+        document.body.style.overflowY = 'auto';
+document.body.style.touchAction = 'pan-y';
+
+setTimeout(() => {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
+}, 100);
         setTimeout(() => { this.animateNames(); this.cdr.detectChanges(); }, 500);
         setTimeout(() => this.initScrollObserver(), 1400);
       }
