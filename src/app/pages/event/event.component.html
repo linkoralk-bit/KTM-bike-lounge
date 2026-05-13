@@ -1,907 +1,328 @@
-<!-- ══════════════════════════════════════════════════════
-     THEME — THE GILDED IVORY SCROLL
-     Concept: A wax-sealed parchment scroll rests on ivory.
-     Break the seal → scroll unfurls → golden lotus mandala
-     watermarks bloom → a romantic editorial invitation
-     written in liquid gold is revealed.
-     Palette: Ivory Parchment · Liquid Gold · Warm Sepia ·
-              Antique Lace · Champagne Rose
-     English only. All data from backend (no hardcoded text).
-     ══════════════════════════════════════════════════════ -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KTM Bike Lounge — Private Invitation</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;700;900&family=Cormorant+Garamond:ital,wght@1,400;1,500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="event.component.css" />
+</head>
+<body>
 
-<!-- ░░ LOADING STATE ░░ -->
-<ng-container *ngIf="!event">
-  <div class="full-loader">
-    <div class="fl-lotus-wrap" aria-hidden="true">
-      <svg class="fl-lotus-svg" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <!-- 8 petals radiating from centre -->
-        <g class="fl-petal">
-          <ellipse cx="32" cy="14" rx="5" ry="11" fill="rgba(184,148,42,0.55)" stroke="rgba(200,168,56,0.7)" stroke-width="0.8" transform="rotate(0 32 32)"/>
-        </g>
-        <g class="fl-petal">
-          <ellipse cx="32" cy="14" rx="5" ry="11" fill="rgba(184,148,42,0.50)" stroke="rgba(200,168,56,0.6)" stroke-width="0.8" transform="rotate(45 32 32)"/>
-        </g>
-        <g class="fl-petal">
-          <ellipse cx="32" cy="14" rx="5" ry="11" fill="rgba(184,148,42,0.45)" stroke="rgba(200,168,56,0.55)" stroke-width="0.8" transform="rotate(90 32 32)"/>
-        </g>
-        <g class="fl-petal">
-          <ellipse cx="32" cy="14" rx="5" ry="11" fill="rgba(184,148,42,0.50)" stroke="rgba(200,168,56,0.6)" stroke-width="0.8" transform="rotate(135 32 32)"/>
-        </g>
-        <g class="fl-petal">
-          <ellipse cx="32" cy="14" rx="5" ry="11" fill="rgba(184,148,42,0.55)" stroke="rgba(200,168,56,0.7)" stroke-width="0.8" transform="rotate(180 32 32)"/>
-        </g>
-        <g class="fl-petal">
-          <ellipse cx="32" cy="14" rx="5" ry="11" fill="rgba(184,148,42,0.50)" stroke="rgba(200,168,56,0.6)" stroke-width="0.8" transform="rotate(225 32 32)"/>
-        </g>
-        <g class="fl-petal">
-          <ellipse cx="32" cy="14" rx="5" ry="11" fill="rgba(184,148,42,0.45)" stroke="rgba(200,168,56,0.55)" stroke-width="0.8" transform="rotate(270 32 32)"/>
-        </g>
-        <g class="fl-petal">
-          <ellipse cx="32" cy="14" rx="5" ry="11" fill="rgba(184,148,42,0.50)" stroke="rgba(200,168,56,0.6)" stroke-width="0.8" transform="rotate(315 32 32)"/>
-        </g>
-        <!-- Centre -->
-        <circle cx="32" cy="32" r="6" fill="rgba(212,184,76,0.75)" stroke="rgba(184,148,42,0.9)" stroke-width="0.8"/>
-        <circle cx="32" cy="32" r="3" fill="rgba(240,210,100,0.9)"/>
-      </svg>
-    </div>
-    <p class="fl-title">Preparing your invitation…</p>
-    <p class="fl-subtitle">A moment, please</p>
-  </div>
-</ng-container>
+  <button class="music-toggle" (click)="toggleMusic()">
+  {{ isMusicPlaying ? '❚❚' : '▶' }}
+</button>
 
-<ng-container *ngIf="event">
+  <!-- Ambient layers -->
+  <div class="noise-overlay"></div>
+  <div class="scan-lines"></div>
+  <div class="vignette"></div>
 
-  <!-- ░░ MUSIC ░░ -->
-  <audio #bgMusic loop>
-    <source src="/music/romantic.mp3" type="audio/mp3">
-  </audio>
-  <button class="music-btn"
-          [class.music-on]="isPlaying"
-          (click)="toggleMusic(bgMusic)"
-          aria-label="Toggle background music">
-    <span class="music-icon">{{ isPlaying ? '⏸' : '♫' }}</span>
-    <span class="music-ring" *ngIf="isPlaying" aria-hidden="true"></span>
-  </button>
-
-  <!-- ░░ FLOATING GOLDEN PETALS ░░ -->
-  <div class="petal-layer" aria-hidden="true">
-    <div *ngFor="let h of hearts; trackBy: trackHeart"
-         class="petal"
-         [style.left.%]="h.x"
-         [style.animation-duration.s]="h.duration"
-         [style.animation-delay.s]="h.delay"
-         [style.font-size.px]="h.size"
-         [style.opacity]="h.opacity"
-         [attr.data-color]="h.colorIdx">
-    </div>
+  <!-- Particle sparks -->
+  <div class="sparks">
+    <span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span>
   </div>
 
-  <!-- ══════════════════════════════════════════════════════
-       SCROLL ENTRY SCENE
-       ══════════════════════════════════════════════════════ -->
-  <div class="scroll-scene" id="envelopeScene">
+  <main class="invitation-wrapper" id="invitation">
 
-    <!-- Mandala watermark background -->
-    <div class="ss-mandala-bg" aria-hidden="true">
-      <svg class="ssmb-svg" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <!-- Concentric mandala rings -->
-        <circle cx="200" cy="200" r="190" stroke="rgba(184,148,42,1)" stroke-width="0.8"/>
-        <circle cx="200" cy="200" r="175" stroke="rgba(184,148,42,0.8)" stroke-width="0.5"/>
-        <circle cx="200" cy="200" r="155" stroke="rgba(184,148,42,0.9)" stroke-width="0.7"/>
-        <circle cx="200" cy="200" r="135" stroke="rgba(184,148,42,0.7)" stroke-width="0.5"/>
-        <circle cx="200" cy="200" r="115" stroke="rgba(184,148,42,0.8)" stroke-width="0.6"/>
-        <circle cx="200" cy="200" r="95"  stroke="rgba(184,148,42,0.6)" stroke-width="0.5"/>
-        <!-- 16 radial spokes -->
-        <line x1="200" y1="10" x2="200" y2="390" stroke="rgba(184,148,42,0.4)" stroke-width="0.5"/>
-        <line x1="10" y1="200" x2="390" y2="200" stroke="rgba(184,148,42,0.4)" stroke-width="0.5"/>
-        <line x1="54" y1="54" x2="346" y2="346" stroke="rgba(184,148,42,0.4)" stroke-width="0.5"/>
-        <line x1="346" y1="54" x2="54" y2="346" stroke="rgba(184,148,42,0.4)" stroke-width="0.5"/>
-        <line x1="200" y1="10" x2="200" y2="390" stroke="rgba(184,148,42,0.3)" stroke-width="0.4" transform="rotate(22.5 200 200)"/>
-        <line x1="200" y1="10" x2="200" y2="390" stroke="rgba(184,148,42,0.3)" stroke-width="0.4" transform="rotate(45 200 200)"/>
-        <line x1="200" y1="10" x2="200" y2="390" stroke="rgba(184,148,42,0.3)" stroke-width="0.4" transform="rotate(67.5 200 200)"/>
-        <line x1="200" y1="10" x2="200" y2="390" stroke="rgba(184,148,42,0.3)" stroke-width="0.4" transform="rotate(112.5 200 200)"/>
-        <line x1="200" y1="10" x2="200" y2="390" stroke="rgba(184,148,42,0.3)" stroke-width="0.4" transform="rotate(135 200 200)"/>
-        <line x1="200" y1="10" x2="200" y2="390" stroke="rgba(184,148,42,0.3)" stroke-width="0.4" transform="rotate(157.5 200 200)"/>
-        <!-- Petal shapes on rings -->
-        <ellipse cx="200" cy="45" rx="8" ry="14" fill="rgba(184,148,42,0.35)" transform="rotate(0 200 200)"/>
-        <ellipse cx="200" cy="45" rx="8" ry="14" fill="rgba(184,148,42,0.35)" transform="rotate(45 200 200)"/>
-        <ellipse cx="200" cy="45" rx="8" ry="14" fill="rgba(184,148,42,0.35)" transform="rotate(90 200 200)"/>
-        <ellipse cx="200" cy="45" rx="8" ry="14" fill="rgba(184,148,42,0.35)" transform="rotate(135 200 200)"/>
-        <ellipse cx="200" cy="45" rx="8" ry="14" fill="rgba(184,148,42,0.35)" transform="rotate(180 200 200)"/>
-        <ellipse cx="200" cy="45" rx="8" ry="14" fill="rgba(184,148,42,0.35)" transform="rotate(225 200 200)"/>
-        <ellipse cx="200" cy="45" rx="8" ry="14" fill="rgba(184,148,42,0.35)" transform="rotate(270 200 200)"/>
-        <ellipse cx="200" cy="45" rx="8" ry="14" fill="rgba(184,148,42,0.35)" transform="rotate(315 200 200)"/>
-        <!-- Centre lotus -->
-        <circle cx="200" cy="200" r="18" fill="rgba(184,148,42,0.4)" stroke="rgba(200,168,56,0.6)" stroke-width="0.8"/>
-        <circle cx="200" cy="200" r="10" fill="rgba(212,184,76,0.5)"/>
-      </svg>
+    <!-- ── TOP MARQUEE ─────────────────────────── -->
+    <div class="top-bar">
+      <span class="bar-line"></span>
+      <span class="bar-text">★ STRICTLY PRIVATE · INVITATION ONLY · MAY 2026 ★</span>
+      <span class="bar-line"></span>
     </div>
 
-    <!-- Corner lotus ornaments -->
-    <div class="ss-corner ss-corner-tl" aria-hidden="true">
-      <svg viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <!-- Lotus stems from corner -->
-        <path d="M0 180 C20 140 40 100 80 70 C100 55 120 50 140 40 C155 32 165 20 180 0"
-              stroke="rgba(184,148,42,1)" stroke-width="1.5" stroke-linecap="round"/>
-        <path d="M0 180 C10 160 25 140 50 120 C70 104 90 98 110 85 C125 75 140 60 160 40 C168 32 174 16 180 0"
-              stroke="rgba(184,148,42,0.7)" stroke-width="0.8" stroke-linecap="round"/>
-        <!-- Lotus blooms along vine -->
-        <ellipse cx="80" cy="70" rx="14" ry="9" fill="rgba(184,148,42,0.4)" stroke="rgba(200,168,56,0.6)" stroke-width="0.8"/>
-        <ellipse cx="80" cy="70" rx="14" ry="9" fill="rgba(184,148,42,0.3)" stroke="rgba(200,168,56,0.5)" stroke-width="0.7" transform="rotate(60 80 70)"/>
-        <ellipse cx="80" cy="70" rx="14" ry="9" fill="rgba(184,148,42,0.25)" stroke="rgba(200,168,56,0.45)" stroke-width="0.7" transform="rotate(120 80 70)"/>
-        <circle cx="80" cy="70" r="5" fill="rgba(212,184,76,0.6)"/>
-        <ellipse cx="140" cy="40" rx="10" ry="6" fill="rgba(184,148,42,0.35)" stroke="rgba(200,168,56,0.55)" stroke-width="0.7"/>
-        <ellipse cx="140" cy="40" rx="10" ry="6" fill="rgba(184,148,42,0.25)" stroke="rgba(200,168,56,0.45)" stroke-width="0.7" transform="rotate(60 140 40)"/>
-        <circle cx="140" cy="40" r="4" fill="rgba(212,184,76,0.55)"/>
-        <!-- Leaves -->
-        <path d="M60 100 C45 90 35 92 36 98 C40 106 55 104 60 100Z" fill="rgba(184,148,42,0.3)" stroke="rgba(200,168,56,0.45)" stroke-width="0.7"/>
-        <path d="M100 72 C85 62 75 65 76 71 C80 79 95 77 100 72Z" fill="rgba(184,148,42,0.3)" stroke="rgba(200,168,56,0.45)" stroke-width="0.7"/>
-      </svg>
-    </div>
-    <div class="ss-corner ss-corner-tr" aria-hidden="true">
-      <svg viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M0 180 C20 140 40 100 80 70 C100 55 120 50 140 40 C155 32 165 20 180 0"
-              stroke="rgba(184,148,42,1)" stroke-width="1.5" stroke-linecap="round"/>
-        <ellipse cx="80" cy="70" rx="14" ry="9" fill="rgba(184,148,42,0.4)" stroke="rgba(200,168,56,0.6)" stroke-width="0.8"/>
-        <ellipse cx="80" cy="70" rx="14" ry="9" fill="rgba(184,148,42,0.3)" stroke="rgba(200,168,56,0.5)" stroke-width="0.7" transform="rotate(60 80 70)"/>
-        <ellipse cx="80" cy="70" rx="14" ry="9" fill="rgba(184,148,42,0.25)" stroke="rgba(200,168,56,0.45)" stroke-width="0.7" transform="rotate(120 80 70)"/>
-        <circle cx="80" cy="70" r="5" fill="rgba(212,184,76,0.6)"/>
-      </svg>
-    </div>
-    <div class="ss-corner ss-corner-bl" aria-hidden="true">
-      <svg viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M0 180 C20 140 40 100 80 70 C100 55 120 50 140 40 C155 32 165 20 180 0"
-              stroke="rgba(184,148,42,1)" stroke-width="1.5" stroke-linecap="round"/>
-        <ellipse cx="80" cy="70" rx="14" ry="9" fill="rgba(184,148,42,0.4)" stroke="rgba(200,168,56,0.6)" stroke-width="0.8"/>
-        <ellipse cx="80" cy="70" rx="14" ry="9" fill="rgba(184,148,42,0.3)" stroke="rgba(200,168,56,0.5)" stroke-width="0.7" transform="rotate(60 80 70)"/>
-        <circle cx="80" cy="70" r="5" fill="rgba(212,184,76,0.6)"/>
-      </svg>
-    </div>
-    <div class="ss-corner ss-corner-br" aria-hidden="true">
-      <svg viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M0 180 C20 140 40 100 80 70 C100 55 120 50 140 40 C155 32 165 20 180 0"
-              stroke="rgba(184,148,42,1)" stroke-width="1.5" stroke-linecap="round"/>
-        <ellipse cx="80" cy="70" rx="14" ry="9" fill="rgba(184,148,42,0.4)" stroke="rgba(200,168,56,0.6)" stroke-width="0.8"/>
-        <ellipse cx="80" cy="70" rx="14" ry="9" fill="rgba(184,148,42,0.3)" stroke="rgba(200,168,56,0.5)" stroke-width="0.7" transform="rotate(60 80 70)"/>
-        <circle cx="80" cy="70" r="5" fill="rgba(212,184,76,0.6)"/>
-      </svg>
+    <!-- ── PRIVATE CLIENT BANNER ───────────────── -->
+    <div class="vip-banner">
+      <div class="vip-corner tl"></div>
+      <div class="vip-corner tr"></div>
+      <div class="vip-corner bl"></div>
+      <div class="vip-corner br"></div>
+      <div class="vip-inner">
+        <span class="vip-stars">◆ ◆ ◆</span>
+        <span class="vip-text">PRIVATE CLIENT INVITATION</span>
+        <span class="vip-stars">◆ ◆ ◆</span>
+      </div>
+      <div class="vip-serial">
+        <span>NO.</span>
+        <span class="serial-num" id="invite-serial">KTM-2026-0001</span>
+      </div>
     </div>
 
-    <!-- Eyebrow -->
-    <div class="ss-eyebrow-line" aria-hidden="true">
-      <div class="ssel-rule"></div>
-      <span class="ss-eyebrow">You Are Cordially Invited</span>
-      <div class="ssel-rule"></div>
-    </div>
+    <!-- ── HERO IMAGE STAGE ────────────────────── -->
+    <section class="hero-stage">
+      <!-- <div class="hero-img-wrap">
+        <div class="hero-grid-overlay"></div>
+        <div class="hero-glow"></div>
+        <img src="/assets/duke-front-3.jpeg" alt="KTM Duke" class="hero-img" />
+        <div class="hero-fade-bottom"></div>
+        <div class="hero-fade-top"></div>
+        <div class="hero-corner tl">◤</div>
+        <div class="hero-corner tr">◥</div>
+        <div class="hero-corner bl">◣</div>
+        <div class="hero-corner br">◢</div>
+      </div> -->
+      <div class="hero-tag">
+        <span class="hero-tag-dot"></span>
+        UNVEILING THE NEXT GENERATION DUKE
+        <span class="hero-tag-dot"></span>
+      </div>
+    </section>
 
-    <!-- ═══ THE GILDED SCROLL ═══ -->
-    <div class="scroll-wrap" id="envelopeWrap" (click)="openEnvelope(bgMusic)">
-
-      <!-- Top scroll rod -->
-      <div class="scroll-rod" aria-hidden="true"></div>
-
-      <!-- Parchment body -->
-      <div class="scroll-body">
-        <!-- Wax seal -->
-        <!-- <div class="scroll-seal" aria-hidden="true">
-          <svg class="scroll-seal-svg" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="32" cy="32" r="30" fill="rgba(168,72,48,0.85)" stroke="rgba(200,120,80,0.6)" stroke-width="1.5"/>
-            <circle cx="32" cy="32" r="26" fill="none" stroke="rgba(240,180,100,0.4)" stroke-width="0.8"/>
-            <polygon points="32,4 34,28 32,30 30,28" fill="rgba(240,180,100,0.5)"/>
-            <polygon points="32,4 34,28 32,30 30,28" fill="rgba(240,180,100,0.5)" transform="rotate(45 32 32)"/>
-            <polygon points="32,4 34,28 32,30 30,28" fill="rgba(240,180,100,0.5)" transform="rotate(90 32 32)"/>
-            <polygon points="32,4 34,28 32,30 30,28" fill="rgba(240,180,100,0.5)" transform="rotate(135 32 32)"/>
-            <polygon points="32,4 34,28 32,30 30,28" fill="rgba(240,180,100,0.5)" transform="rotate(180 32 32)"/>
-            <polygon points="32,4 34,28 32,30 30,28" fill="rgba(240,180,100,0.5)" transform="rotate(225 32 32)"/>
-            <polygon points="32,4 34,28 32,30 30,28" fill="rgba(240,180,100,0.5)" transform="rotate(270 32 32)"/>
-            <polygon points="32,4 34,28 32,30 30,28" fill="rgba(240,180,100,0.5)" transform="rotate(315 32 32)"/>
-            <ellipse cx="32" cy="32" rx="9" ry="6" fill="rgba(240,200,100,0.55)" stroke="rgba(255,220,140,0.6)" stroke-width="0.8"/>
-            <ellipse cx="32" cy="32" rx="9" ry="6" fill="rgba(240,200,100,0.4)" stroke="rgba(255,220,140,0.5)" stroke-width="0.8" transform="rotate(60 32 32)"/>
-            <ellipse cx="32" cy="32" rx="9" ry="6" fill="rgba(240,200,100,0.35)" stroke="rgba(255,220,140,0.45)" stroke-width="0.8" transform="rotate(120 32 32)"/>
-            <circle cx="32" cy="32" r="4" fill="rgba(255,230,150,0.85)"/>
+    <!-- ── LOGO SECTION ────────────────────────── -->
+    <div class="logo-section">
+      <div class="ktm-badge">
+        <div class="ktm-logo-wrap">
+          <svg viewBox="0 0 200 70" xmlns="http://www.w3.org/2000/svg" class="ktm-svg">
+            <defs>
+              <linearGradient id="ktm-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#FF8533"/>
+                <stop offset="100%" stop-color="#FF6400"/>
+              </linearGradient>
+            </defs>
+            <text
+  x="50%"
+  y="58"
+  text-anchor="middle"font-family="Bebas Neue, sans-serif" font-size="64" fill="url(#ktm-grad)" letter-spacing="-2">KTM</text>
           </svg>
-        </div> -->
-
-        <p class="ss-tagline">The Wedding of</p>
-        <p class="ss-names-preview">{{ event.groom }} &amp; {{ event.bride }}</p>
-
-        <!-- Mini lotus divider inside scroll -->
-        <svg viewBox="0 0 160 16" fill="none" width="130" style="position:relative;z-index:5;opacity:0.55">
-          <line x1="0" y1="8" x2="58" y2="8" stroke="rgba(184,148,42,0.5)" stroke-width="0.7"/>
-          <ellipse cx="68" cy="8" rx="7" ry="4.5" fill="rgba(184,148,42,0.35)" stroke="rgba(200,168,56,0.5)" stroke-width="0.7"/>
-          <ellipse cx="68" cy="8" rx="7" ry="4.5" fill="rgba(184,148,42,0.25)" stroke="rgba(200,168,56,0.4)" stroke-width="0.7" transform="rotate(60 68 8)"/>
-          <circle cx="68" cy="8" r="2.5" fill="rgba(212,184,76,0.7)"/>
-          <ellipse cx="92" cy="8" rx="7" ry="4.5" fill="rgba(184,148,42,0.35)" stroke="rgba(200,168,56,0.5)" stroke-width="0.7"/>
-          <ellipse cx="92" cy="8" rx="7" ry="4.5" fill="rgba(184,148,42,0.25)" stroke="rgba(200,168,56,0.4)" stroke-width="0.7" transform="rotate(60 92 8)"/>
-          <circle cx="92" cy="8" r="2.5" fill="rgba(212,184,76,0.7)"/>
-          <line x1="102" y1="8" x2="160" y2="8" stroke="rgba(184,148,42,0.5)" stroke-width="0.7"/>
-        </svg>
-
-        <p class="ss-tagline" style="font-size:0.78rem">{{ event.date | date:'d MMMM yyyy' }}</p>
-      </div>
-
-      <!-- Bottom scroll rod -->
-      <div class="scroll-rod-bottom" aria-hidden="true"></div>
-
-    </div><!-- end scroll-wrap -->
-
-    <!-- Hint -->
-    <div class="scroll-hint" id="wsHint">
-      <div class="sh-arrow" aria-hidden="true"></div>
-      <span class="sh-text">Tap to open</span>
-    </div>
-
-  </div><!-- end scroll-scene -->
-
-  <!-- Burn transition overlay -->
-  <div class="burn-overlay" id="filmBurn" aria-hidden="true"></div>
-
-  <!-- ══════════════════════════════════════════════════════
-       MAIN INVITATION CONTENT
-       ══════════════════════════════════════════════════════ -->
-  <div class="invitation-reveal" id="letterReveal">
-
-    <!-- Background photo slideshow -->
-    <div class="bg-stage" aria-hidden="true">
-      <div *ngFor="let slide of bgSlides; let i = index"
-           class="bg-slide"
-           [class.bg-active]="isBgActive(i)"
-           [style.background-image]="'url(' + slide + ')'">
-      </div>
-      <div class="bg-overlay"></div>
-    </div>
-
-    <!-- ════════════════════
-         HERO SECTION
-         ════════════════════ -->
-    <section class="hero">
-
-      <!-- Top mandala ornament -->
-      <div class="hero-mandala-top" aria-hidden="true">
-        <svg viewBox="0 0 340 170" fill="none" xmlns="http://www.w3.org/2000/svg" width="100%">
-          <!-- Half-mandala showing from top -->
-          <circle cx="170" cy="0" r="165" stroke="rgba(184,148,42,0.5)" stroke-width="1"/>
-          <circle cx="170" cy="0" r="148" stroke="rgba(184,148,42,0.35)" stroke-width="0.7"/>
-          <circle cx="170" cy="0" r="128" stroke="rgba(184,148,42,0.4)" stroke-width="0.8"/>
-          <circle cx="170" cy="0" r="108" stroke="rgba(184,148,42,0.3)" stroke-width="0.6"/>
-          <circle cx="170" cy="0" r="88"  stroke="rgba(184,148,42,0.35)" stroke-width="0.7"/>
-          <!-- Petal tips appearing from the arc -->
-          <ellipse cx="170" cy="-163" rx="10" ry="16" fill="rgba(184,148,42,0.45)" transform="rotate(0 170 0)"/>
-          <ellipse cx="170" cy="-163" rx="10" ry="16" fill="rgba(184,148,42,0.4)" transform="rotate(22 170 0)"/>
-          <ellipse cx="170" cy="-163" rx="10" ry="16" fill="rgba(184,148,42,0.35)" transform="rotate(-22 170 0)"/>
-          <ellipse cx="170" cy="-163" rx="10" ry="16" fill="rgba(184,148,42,0.3)" transform="rotate(44 170 0)"/>
-          <ellipse cx="170" cy="-163" rx="10" ry="16" fill="rgba(184,148,42,0.25)" transform="rotate(-44 170 0)"/>
-          <ellipse cx="170" cy="-163" rx="10" ry="16" fill="rgba(184,148,42,0.2)" transform="rotate(66 170 0)"/>
-          <ellipse cx="170" cy="-163" rx="10" ry="16" fill="rgba(184,148,42,0.2)" transform="rotate(-66 170 0)"/>
-          <!-- Radial spokes -->
-          <line x1="170" y1="0" x2="170" y2="-170" stroke="rgba(184,148,42,0.25)" stroke-width="0.5" transform="rotate(0 170 0)"/>
-          <line x1="170" y1="0" x2="170" y2="-170" stroke="rgba(184,148,42,0.2)" stroke-width="0.4" transform="rotate(22 170 0)"/>
-          <line x1="170" y1="0" x2="170" y2="-170" stroke="rgba(184,148,42,0.2)" stroke-width="0.4" transform="rotate(-22 170 0)"/>
-          <line x1="170" y1="0" x2="170" y2="-170" stroke="rgba(184,148,42,0.2)" stroke-width="0.4" transform="rotate(44 170 0)"/>
-          <line x1="170" y1="0" x2="170" y2="-170" stroke="rgba(184,148,42,0.2)" stroke-width="0.4" transform="rotate(-44 170 0)"/>
-          <line x1="170" y1="0" x2="170" y2="-170" stroke="rgba(184,148,42,0.15)" stroke-width="0.4" transform="rotate(66 170 0)"/>
-          <line x1="170" y1="0" x2="170" y2="-170" stroke="rgba(184,148,42,0.15)" stroke-width="0.4" transform="rotate(-66 170 0)"/>
-          <line x1="170" y1="0" x2="170" y2="-170" stroke="rgba(184,148,42,0.12)" stroke-width="0.3" transform="rotate(88 170 0)"/>
-          <line x1="170" y1="0" x2="170" y2="-170" stroke="rgba(184,148,42,0.12)" stroke-width="0.3" transform="rotate(-88 170 0)"/>
-        </svg>
-      </div>
-
-      <p class="hero-eyebrow">Sacred Wedding Invitation</p>
-
-      <div class="hero-divider-line" aria-hidden="true">
-        <div class="hdl-rule"></div>
-        <svg viewBox="0 0 18 18" fill="none" width="16" style="opacity:0.5">
-          <ellipse cx="9" cy="9" rx="6" ry="4" fill="rgba(184,148,42,0.6)" stroke="rgba(200,168,56,0.7)" stroke-width="0.8"/>
-          <ellipse cx="9" cy="9" rx="6" ry="4" fill="rgba(184,148,42,0.4)" stroke="rgba(200,168,56,0.55)" stroke-width="0.8" transform="rotate(60 9 9)"/>
-          <ellipse cx="9" cy="9" rx="6" ry="4" fill="rgba(184,148,42,0.3)" stroke="rgba(200,168,56,0.45)" stroke-width="0.8" transform="rotate(120 9 9)"/>
-          <circle cx="9" cy="9" r="2.5" fill="rgba(212,184,76,0.8)"/>
-        </svg>
-        <div class="hdl-rule"></div>
-      </div>
-
-      <!-- Names (typewriter animated) -->
-      <div class="hero-couple">
-        <span class="hero-groom">{{ displayGroom }}<span class="hero-cursor" *ngIf="displayGroom.length < (event.groom?.length || 0)" aria-hidden="true">|</span></span>
-        <span class="hero-amp">&amp;</span>
-        <span class="hero-bride">{{ displayBride }}<span class="hero-cursor" *ngIf="displayBride.length < (event.bride?.length || 0) && displayGroom.length >= (event.groom?.length || 0)" aria-hidden="true">|</span></span>
-      </div>
-
-      <!-- Lineage -->
-      <div *ngIf="event.parents" class="hero-lineage fade-up">
-        <div *ngIf="event.parents.groom" class="hl-side">
-          <span class="hl-relation">Son of</span>
-          <span class="hl-parent">{{ event.parents.groom }}</span>
         </div>
-        <div *ngIf="event.parents.bride" class="hl-side">
-          <span class="hl-relation">Daughter of</span>
-          <span class="hl-parent">{{ event.parents.bride }}</span>
+        <div class="tagline-wrap">
+          <span class="ready-tag">◣ READY TO RACE ◢</span>
         </div>
       </div>
+    </div>
 
-      <p class="hero-invitation-text">cordially request the pleasure of your company</p>
+    <!-- ── HERO HEADLINE ───────────────────────── -->
+    <div class="hero-section">
+      <div class="event-label">
+        <em>You are cordially invited to the</em>
+      </div>
+      <h1 class="event-title">
+        <span class="title-line-1">BIKE</span>
+        <span class="title-line-2">LOUNGE</span>
+        <span class="title-accent">GRAND OPENING · 2026</span>
+      </h1>
+      <div class="subtitle-strip">
+        <span class="strip-text">★ THE BIGGEST KTM SHOWROOM IN SRI LANKA ★</span>
+      </div>
+    </div>
 
-      <!-- Date badge -->
-      <div class="hero-date-badge fade-up">
-        <span class="hdb-day">{{ event.date | date:'EEEE' }}</span>
-        <div class="hdb-date">
-  {{ event.date | date:'d' }}
-  <sup class="hdb-date-sup">
-    {{ getDaySuffix() }}
-  </sup>
+    <!-- ── DIVIDER ─────────────────────────────── -->
+    <div class="orange-divider">
+      <div class="divider-dot"></div>
+      <div class="divider-line"></div>
+      <div class="divider-diamond">◆</div>
+      <div class="divider-line"></div>
+      <div class="divider-dot"></div>
+    </div>
+
+    <!-- ── COUNTDOWN ───────────────────────────── -->
+    <section class="countdown-section">
+      <div class="countdown-label">COUNTDOWN TO OPENING</div>
+      <div class="countdown-grid">
+        <div class="cd-cell">
+          <div class="cd-num" id="cd-days">00</div>
+          <div class="cd-lbl">Days</div>
+        </div>
+        <div class="cd-sep">:</div>
+        <div class="cd-cell">
+          <div class="cd-num" id="cd-hours">00</div>
+          <div class="cd-lbl">Hours</div>
+        </div>
+        <div class="cd-sep">:</div>
+        <div class="cd-cell">
+          <div class="cd-num" id="cd-mins">00</div>
+          <div class="cd-lbl">Minutes</div>
+        </div>
+        <div class="cd-sep">:</div>
+        <div class="cd-cell">
+          <div class="cd-num" id="cd-secs">00</div>
+          <div class="cd-lbl">Seconds</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── DETAILS GRID ────────────────────────── -->
+    <div class="details-grid">
+      <div class="detail-card">
+        <div class="detail-icon">◷</div>
+        <div class="detail-label">DATE</div>
+        <div class="detail-value">MAY 18</div>
+        <div class="detail-sub">2026 · MONDAY</div>
+      </div>
+      <div class="detail-card center-card">
+        <div class="detail-icon">⊙</div>
+        <div class="detail-label">TIME</div>
+        <div class="detail-value">10:00</div>
+        <div class="detail-sub">A.M. SHARP</div>
+      </div>
+      <div class="detail-card">
+        <div class="detail-icon">◉</div>
+        <div class="detail-label">VENUE</div>
+        <div class="detail-value">PALIYAGODA</div>
+        <div class="detail-sub">SHOWROOM</div>
+      </div>
+    </div>
+
+    <!-- ── ADDRESS BLOCK ───────────────────────── -->
+    <div class="address-block">
+      <div class="addr-icon">▶</div>
+      <div class="addr-text">
+        <span class="addr-main">389 NEGOMBO ROAD, PELIYAGODA</span>
+        <span class="addr-country">SRI LANKA</span>
+      </div>
+      <a class="addr-map" href="https://maps.google.com/?q=389+Negombo+Road+Peliyagoda+Sri+Lanka" target="_blank" rel="noopener">
+        <span>MAP</span><span class="addr-arrow">↗</span>
+      </a>
+    </div>
+
+    <!-- ── BIKE GALLERY ────────────────────────── -->
+    <section class="gallery-section">
+      <div class="gallery-heading">
+        <span class="gh-line"></span>
+        <span class="gh-text">★ THE COLLECTION ★</span>
+        <span class="gh-line"></span>
+      </div>
+      <div class="gallery-grid">
+        <figure class="g-item g-tall">
+          <img src="assets/duke-front-1.jpeg" alt="KTM Duke front" loading="lazy" />
+          <figcaption>DUKE · NIGHT BLACK</figcaption>
+        </figure>
+        <figure class="g-item">
+          <img src="assets/duke-tank-1.jpeg" alt="KTM Duke tank" loading="lazy" />
+          <figcaption>ELECTRIC ORANGE</figcaption>
+        </figure>
+        <figure class="g-item">
+          <img src="assets/duke-side.jpeg" alt="KTM Duke side" loading="lazy" />
+          <figcaption>SIDE PROFILE</figcaption>
+        </figure>
+        <figure class="g-item">
+          <img src="assets/duke-tank-2.jpeg" alt="KTM Duke 3/4" loading="lazy" />
+          <figcaption>DUKE · 3/4</figcaption>
+        </figure>
+        <figure class="g-item">
+          <img src="assets/duke-front-1.jpeg" alt="KTM Duke 3/4" loading="lazy" />
+          <figcaption>DUKE · FRONT</figcaption>
+        </figure>
+        <figure class="g-item g-wide">
+          <img src="assets/duke-front-2.jpeg" alt="KTM Duke headlamp" loading="lazy" />
+          <figcaption>SIGNATURE LED · HV ENTERPRISES</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ── BIKE VISUAL STRIP ───────────────────── -->
+    <div class="bike-visual-strip">
+      <div class="strip-bg"></div>
+      <div class="speed-lines">
+        <span></span><span></span><span></span><span></span><span></span>
+      </div>
+      <div class="bike-silhouette">
+        <svg viewBox="0 0 420 160" xmlns="http://www.w3.org/2000/svg" class="bike-svg">
+          <circle cx="90" cy="115" r="42" fill="none" stroke="#FF6400" stroke-width="7"/>
+          <circle cx="90" cy="115" r="28" fill="none" stroke="#222" stroke-width="3"/>
+          <circle cx="90" cy="115" r="8" fill="#FF6400"/>
+          <circle cx="330" cy="115" r="42" fill="none" stroke="#FF6400" stroke-width="7"/>
+          <circle cx="330" cy="115" r="28" fill="none" stroke="#222" stroke-width="3"/>
+          <circle cx="330" cy="115" r="8" fill="#FF6400"/>
+          <path d="M90 115 L130 55 L200 45 L260 50 L310 80 L330 115" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
+          <path d="M145 55 Q200 20 260 50 L250 58 Q200 32 148 62 Z" fill="#FF6400" opacity="0.9"/>
+          <path d="M260 50 L310 80 L295 85 L255 58 Z" fill="#333"/>
+          <line x1="295" y1="85" x2="310" y2="115" stroke="#aaa" stroke-width="5"/>
+          <line x1="310" y1="80" x2="320" y2="110" stroke="#aaa" stroke-width="4"/>
+          <rect x="155" y="68" width="80" height="40" rx="5" fill="#1a1a1a" stroke="#FF6400" stroke-width="2"/>
+          <path d="M130 100 Q110 110 85 120" fill="none" stroke="#888" stroke-width="5" stroke-linecap="round"/>
+          <line x1="278" y1="38" x2="310" y2="48" stroke="#ccc" stroke-width="4" stroke-linecap="round"/>
+          <ellipse cx="325" cy="70" rx="12" ry="8" fill="#FF6400" opacity="0.7"/>
+          <ellipse cx="325" cy="70" rx="7" ry="5" fill="#fff" opacity="0.9"/>
+          <text x="172" y="92" font-family="Bebas Neue, sans-serif" font-size="18" fill="#FF6400" letter-spacing="2">DUKE</text>
+        </svg>
+      </div>
+    </div>
+
+    <!-- ── DRESS CODE / NOTE ───────────────────── -->
+    <section class="dress-section">
+      <div class="ds-row">
+        <div class="ds-col">
+          <div class="ds-lbl">DRESS CODE</div>
+          <div class="ds-val">SMART CASUAL</div>
+        </div>
+        <div class="ds-col">
+          <div class="ds-lbl">ARRIVAL</div>
+          <div class="ds-val">FROM 10:00 A.M.</div>
+        </div>
+        <div class="ds-col">
+          <div class="ds-lbl">SEATING</div>
+          <div class="ds-val">RESERVED</div>
+        </div>
+      </div>
+      <p class="ds-note">
+        <em>"This invitation is extended exclusively to our valued private clients.
+        Kindly present this card upon arrival. Non-transferable."</em>
+      </p>
+    </section>
+
+    <!-- ── RSVP / CONTACT ──────────────────────── -->
+    <section class="contact-section">
+      <div class="contact-heading">★ KINDLY RSVP BY MAY 18 ★</div>
+      <div class="contact-numbers">
+        <a href="tel:0759009888" class="contact-num">
+          <span class="num-icon">📞</span>
+          <span>075 900 9888</span>
+        </a>
+        <div class="contact-sep">·</div>
+        <a href="tel:0721665461" class="contact-num">
+          <span class="num-icon">📞</span>
+          <span>072 166 5461</span>
+        </a>
+      </div>
+      <a class="rsvp-cta" href="https://wa.me/94759009888?text=I%20will%20attend%20the%20KTM%20Bike%20Lounge%20Grand%20Opening">
+        <span class="rsvp-text">CONFIRM YOUR ATTENDANCE</span>
+        <span class="rsvp-arrow">→</span>
+      </a>
+    </section>
+
+    <!-- ── DIVIDER ─────────────────────────────── -->
+    <div class="orange-divider">
+      <div class="divider-dot"></div>
+      <div class="divider-line"></div>
+      <div class="divider-diamond">◆</div>
+      <div class="divider-line"></div>
+      <div class="divider-dot"></div>
+    </div>
+
+    <!-- ── FOOTER ──────────────────────────────── -->
+    <div class="footer-section">
+      <div class="powered-label">PRESENTED BY</div>
+      <div class="company-name">HV ENTERPRISES PVT LTD</div>
+      <div class="company-tagline">AUTHORISED KTM DEALER · PALIYAGODA</div>
+    </div>
+
+    <!-- ── BOTTOM BAR ──────────────────────────── -->
+    <!-- <div class="bottom-bar">
+      <span class="bar-line"></span>
+      <span class="bar-text">★ READY TO RACE · KTM · 2026 · PALIYAGODA ★</span>
+      <span class="bar-line"></span>
+    </div> -->
+
+    <!-- ── FOOTER ──────────────────────────────── -->
+<div class="footer-section">
+  <div class="powered-label">POWERED BY</div>
+
+  <div class="company-name">LINKORA</div>
+
+  <div class="company-tagline">
+    DIGITAL INVITATIONS · EVENT EXPERIENCES
+  </div>
+
+  <a href="tel:0702174799" class="footer-contact">
+    070 217 4799
+  </a>
 </div>
-        <span class="hdb-month-year">{{ event.date | date:'MMMM yyyy' }}</span>
-        <span class="hdb-time">08 : 40 AM — 04 : 15 PM</span>
-      </div>
 
-      <!-- Bottom hero lotus -->
-      <div class="hero-lotus-bottom fade-up" aria-hidden="true">
-        <svg viewBox="0 0 120 36" fill="none" width="100" xmlns="http://www.w3.org/2000/svg">
-          <line x1="0" y1="18" x2="40" y2="18" stroke="rgba(184,148,42,0.4)" stroke-width="0.8"/>
-          <ellipse cx="52" cy="18" rx="10" ry="7" fill="rgba(184,148,42,0.35)" stroke="rgba(200,168,56,0.5)" stroke-width="0.8"/>
-          <ellipse cx="52" cy="18" rx="10" ry="7" fill="rgba(184,148,42,0.25)" stroke="rgba(200,168,56,0.4)" stroke-width="0.8" transform="rotate(60 52 18)"/>
-          <ellipse cx="52" cy="18" rx="10" ry="7" fill="rgba(184,148,42,0.2)" stroke="rgba(200,168,56,0.35)" stroke-width="0.8" transform="rotate(120 52 18)"/>
-          <circle cx="52" cy="18" r="3.5" fill="rgba(212,184,76,0.7)"/>
-          <ellipse cx="68" cy="18" rx="10" ry="7" fill="rgba(184,148,42,0.35)" stroke="rgba(200,168,56,0.5)" stroke-width="0.8"/>
-          <ellipse cx="68" cy="18" rx="10" ry="7" fill="rgba(184,148,42,0.25)" stroke="rgba(200,168,56,0.4)" stroke-width="0.8" transform="rotate(60 68 18)"/>
-          <ellipse cx="68" cy="18" rx="10" ry="7" fill="rgba(184,148,42,0.2)" stroke="rgba(200,168,56,0.35)" stroke-width="0.8" transform="rotate(120 68 18)"/>
-          <circle cx="68" cy="18" r="3.5" fill="rgba(212,184,76,0.7)"/>
-          <line x1="80" y1="18" x2="120" y2="18" stroke="rgba(184,148,42,0.4)" stroke-width="0.8"/>
-        </svg>
-      </div>
+  </main>
 
-      <!-- Scroll indicator -->
-      <div class="scroll-indicator fade-up" aria-hidden="true">
-        <div class="si-line"></div>
-        <div class="si-dot"></div>
-      </div>
-
-    </section>
-
-    <!-- ══ GOLD DIVIDER ══ -->
-    <div class="gold-divider fade-up" aria-hidden="true">
-      <div class="gd-line"></div>
-      <div class="gd-lotus">
-        <svg viewBox="0 0 28 20" fill="none" width="24">
-          <ellipse cx="14" cy="10" rx="10" ry="6" fill="rgba(184,148,42,0.45)" stroke="rgba(200,168,56,0.6)" stroke-width="0.8"/>
-          <ellipse cx="14" cy="10" rx="10" ry="6" fill="rgba(184,148,42,0.3)" stroke="rgba(200,168,56,0.45)" stroke-width="0.8" transform="rotate(60 14 10)"/>
-          <ellipse cx="14" cy="10" rx="10" ry="6" fill="rgba(184,148,42,0.25)" stroke="rgba(200,168,56,0.4)" stroke-width="0.8" transform="rotate(120 14 10)"/>
-          <circle cx="14" cy="10" r="3.5" fill="rgba(212,184,76,0.75)"/>
-        </svg>
-      </div>
-      <div class="gd-line"></div>
-    </div>
-
-    <!-- ════════════════════
-         COUNTDOWN
-         ════════════════════ -->
-    <!-- <section class="inv-section fade-up">
-      <div class="inv-card">
-        <p class="card-eyebrow">Counting Down</p>
-        <p class="card-title">The Auspicious Moment</p>
-        <div class="countdown-strip">
-          <div class="cds-unit">
-            <div class="cds-box">
-              <span class="cds-num" [class.tick]="tickDays()">{{ fDays }}</span>
-            </div>
-            <span class="cds-label">Days</span>
-          </div>
-          <span class="cds-sep" aria-hidden="true">·</span>
-          <div class="cds-unit">
-            <div class="cds-box">
-              <span class="cds-num" [class.tick]="tickHours()">{{ fHours }}</span>
-            </div>
-            <span class="cds-label">Hours</span>
-          </div>
-          <span class="cds-sep" aria-hidden="true">·</span>
-          <div class="cds-unit">
-            <div class="cds-box">
-              <span class="cds-num" [class.tick]="tickMinutes()">{{ fMinutes }}</span>
-            </div>
-            <span class="cds-label">Minutes</span>
-          </div>
-          <span class="cds-sep" aria-hidden="true">·</span>
-          <div class="cds-unit">
-            <div class="cds-box">
-              <span class="cds-num" [class.tick]="tickSeconds()">{{ fSeconds }}</span>
-            </div>
-            <span class="cds-label">Seconds</span>
-          </div>
-        </div>
-      </div>
-    </section> -->
-
-    <!-- ══ GOLD DIVIDER ══ -->
-    <!-- <div class="gold-divider fade-up" aria-hidden="true">
-      <div class="gd-line"></div>
-      <div class="gd-lotus">
-        <svg viewBox="0 0 28 20" fill="none" width="24">
-          <ellipse cx="14" cy="10" rx="10" ry="6" fill="rgba(184,148,42,0.45)" stroke="rgba(200,168,56,0.6)" stroke-width="0.8"/>
-          <ellipse cx="14" cy="10" rx="10" ry="6" fill="rgba(184,148,42,0.3)" transform="rotate(60 14 10)"/>
-          <ellipse cx="14" cy="10" rx="10" ry="6" fill="rgba(184,148,42,0.25)" transform="rotate(120 14 10)"/>
-          <circle cx="14" cy="10" r="3.5" fill="rgba(212,184,76,0.75)"/>
-        </svg>
-      </div>
-      <div class="gd-line"></div>
-    </div> -->
-
-    <!-- ════════════════════
-         CEREMONY DETAILS
-         ════════════════════ -->
-    <!-- <section class="inv-section fade-up">
-      <div class="inv-card">
-        <p class="card-eyebrow">The Ceremony</p>
-        <p class="card-title">Celebration Details</p>
-        <div class="ceremony-grid">
-          <div class="cg-item">
-            <div class="cgi-icon">◈</div>
-            <span class="cgi-label">Date</span>
-            <span class="cgi-value">{{ event.date | date:'d MMMM yyyy' }}</span>
-          </div>
-          <div class="cg-item">
-            <div class="cgi-icon">◉</div>
-            <span class="cgi-label">Time</span>
-            <span class="cgi-value">09:00 AM – 04:00 PM</span>
-          </div>
-          <div class="cg-item" style="grid-column: span 2">
-            <div class="cgi-icon">✦</div>
-            <span class="cgi-label">Poruwa Ceremony</span>
-            <span class="cgi-value">10:05 AM</span>
-          </div>
-        </div>
-      </div>
-    </section> -->
-
-    <!-- ══ GOLD DIVIDER ══ -->
-    <!-- <div class="gold-divider fade-up" aria-hidden="true">
-      <div class="gd-line"></div>
-      <div class="gd-lotus">
-        <svg viewBox="0 0 28 20" fill="none" width="24">
-          <ellipse cx="14" cy="10" rx="10" ry="6" fill="rgba(184,148,42,0.45)" stroke="rgba(200,168,56,0.6)" stroke-width="0.8"/>
-          <ellipse cx="14" cy="10" rx="10" ry="6" fill="rgba(184,148,42,0.3)" transform="rotate(60 14 10)"/>
-          <circle cx="14" cy="10" r="3.5" fill="rgba(212,184,76,0.75)"/>
-        </svg>
-      </div>
-      <div class="gd-line"></div>
-    </div> -->
-
-    <!-- ════════════════════
-         OUR STORY
-         ════════════════════ -->
-    <section *ngIf="event.story?.length" class="inv-section fade-up">
-      <div class="inv-card">
-        <p class="card-eyebrow">A Journey Written in Time</p>
-        <p class="card-title">Our Story</p>
-        <div class="story-timeline">
-          <div *ngFor="let s of event.story; let i = index" class="st-item">
-            <div class="st-dot" aria-hidden="true"></div>
-            <h3 class="st-title">{{ s.title }}</h3>
-            <p class="st-body">{{ s.description }}</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ══ GOLD DIVIDER (conditional) ══ -->
-    <div *ngIf="event.story?.length" class="gold-divider fade-up" aria-hidden="true">
-      <div class="gd-line"></div>
-      <div class="gd-lotus">
-        <svg viewBox="0 0 28 20" fill="none" width="24">
-          <ellipse cx="14" cy="10" rx="10" ry="6" fill="rgba(184,148,42,0.45)" stroke="rgba(200,168,56,0.6)" stroke-width="0.8"/>
-          <ellipse cx="14" cy="10" rx="10" ry="6" fill="rgba(184,148,42,0.3)" transform="rotate(60 14 10)"/>
-          <circle cx="14" cy="10" r="3.5" fill="rgba(212,184,76,0.75)"/>
-        </svg>
-      </div>
-      <div class="gd-line"></div>
-    </div>
-
-    <!-- ════════════════════
-         PHOTO GALLERY
-         ════════════════════ -->
-    <section *ngIf="galleryImages.length" class="inv-section fade-up">
-      <div class="inv-card">
-        <p class="card-eyebrow">Precious Memories</p>
-        <p class="card-title">
-  Beautiful Things
-  <span class="edition">#7yearsEdition</span>
-</p>
-        <div class="gallery-wrapper">
-          <div class="gallery-track" [style.transform]="galleryTranslate">
-            <img *ngFor="let img of galleryImages; let i = index"
-                 class="gallery-slide"
-                 [src]="img"
-                 [alt]="'Wedding photo ' + (i + 1)"
-                 (click)="openLightbox(i)">
-          </div>
-          <button class="gallery-nav gallery-prev" (click)="prevSlide()" aria-label="Previous photo">‹</button>
-          <button class="gallery-nav gallery-next" (click)="nextSlide()" aria-label="Next photo">›</button>
-          <div class="gallery-dots">
-            <button *ngFor="let d of galleryDots"
-                    class="gd-dot"
-                    [class.gd-active]="d === galleryIndex"
-                    (click)="goToSlide(d)"
-                    [attr.aria-label]="'Photo ' + (d + 1)">
-            </button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ══ GOLD DIVIDER (conditional) ══ -->
-    <div *ngIf="galleryImages.length" class="gold-divider fade-up" aria-hidden="true">
-      <div class="gd-line"></div>
-      <div class="gd-lotus">
-        <svg viewBox="0 0 28 20" fill="none" width="24">
-          <ellipse cx="14" cy="10" rx="10" ry="6" fill="rgba(184,148,42,0.45)" stroke="rgba(200,168,56,0.6)" stroke-width="0.8"/>
-          <ellipse cx="14" cy="10" rx="10" ry="6" fill="rgba(184,148,42,0.3)" transform="rotate(60 14 10)"/>
-          <circle cx="14" cy="10" r="3.5" fill="rgba(212,184,76,0.75)"/>
-        </svg>
-      </div>
-      <div class="gd-line"></div>
-    </div>
-
-    <!-- ════════════════════
-         PROGRAMME / SCHEDULE
-         ════════════════════ -->
-    <section *ngIf="event.schedule?.length" class="inv-section fade-up">
-      <div class="inv-card">
-        <p class="card-eyebrow">Order of Celebration</p>
-        <p class="card-title">Programme</p>
-        <div class="story-timeline">
-          <div *ngFor="let item of event.schedule; let i = index"
-               class="st-item" [style.animation-delay.ms]="i * 80">
-            <div class="st-dot" aria-hidden="true"></div>
-            <h3 class="st-title" style="font-size:0.95rem">{{ item.time }}</h3>
-            <p class="st-body">{{ item.name }}</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ══ GOLD DIVIDER ══ -->
-    <div class="gold-divider fade-up" aria-hidden="true">
-      <div class="gd-line"></div>
-      <div class="gd-lotus">
-        <svg viewBox="0 0 28 20" fill="none" width="24">
-          <ellipse cx="14" cy="10" rx="10" ry="6" fill="rgba(184,148,42,0.45)" stroke="rgba(200,168,56,0.6)" stroke-width="0.8"/>
-          <ellipse cx="14" cy="10" rx="10" ry="6" fill="rgba(184,148,42,0.3)" transform="rotate(60 14 10)"/>
-          <circle cx="14" cy="10" r="3.5" fill="rgba(212,184,76,0.75)"/>
-        </svg>
-      </div>
-      <div class="gd-line"></div>
-    </div>
-
-    <!-- ════════════════════
-         VENUE MAP
-         ════════════════════ -->
-    <section class="inv-section fade-up">
-      <div class="inv-card">
-        <p class="card-eyebrow">Sacred Location</p>
-        <p class="card-title">Venue</p>
-        <p class="venue-name">
-  <span class="venue-location">{{ event.location }}</span> -
-  <span class="venue-hall">(Riverbank Chateau)</span>
-</p>
-        <!-- <p class="venue-address">Kurunegala Road, Nikaweratiya</p> -->
-        <div class="map-wrap">
-          <div class="map-wrap-top" aria-hidden="true"></div>
-          <iframe [src]="mapUrl" allowfullscreen loading="lazy" title="Wedding venue map"></iframe>
-        </div>
-      </div>
-    </section>
-
-    <!-- ══ GOLD DIVIDER ══ -->
-    <div class="gold-divider fade-up" aria-hidden="true">
-      <div class="gd-line"></div>
-      <div class="gd-lotus">
-        <svg viewBox="0 0 28 20" fill="none" width="24">
-          <ellipse cx="14" cy="10" rx="10" ry="6" fill="rgba(184,148,42,0.45)" stroke="rgba(200,168,56,0.6)" stroke-width="0.8"/>
-          <ellipse cx="14" cy="10" rx="10" ry="6" fill="rgba(184,148,42,0.3)" transform="rotate(60 14 10)"/>
-          <circle cx="14" cy="10" r="3.5" fill="rgba(212,184,76,0.75)"/>
-        </svg>
-      </div>
-      <div class="gd-line"></div>
-    </div>
-
-    <!-- ════════════════════
-         RSVP
-         ════════════════════ -->
-    <section class="inv-section fade-up">
-      <p class="card-eyebrow" style="text-align:center;margin-bottom:4px">Your Presence is Requested</p>
-      <p class="card-title" style="text-align:center;margin-bottom:20px;font-family:var(--font-display);font-style:italic;font-weight:500;font-size:1.6rem;color:var(--text-primary)">RSVP</p>
-
-      <ng-container *ngIf="!rsvpSubmitted; else rsvpDone">
-        <div class="rsvp-card">
-
-          <!-- RSVP Deadline -->
-          <div class="rsvp-deadline">
-            <span class="rsvp-deadline-icon">🍂</span>
-            <span class="rsvp-deadline-text">Kindly reply by</span>
-            <span class="rsvp-deadline-date">5th July 2026</span>
-          </div>
-
-          <!-- Contact persons -->
-          <div class="rsvp-contacts">
-            <div class="rsvp-contact-card">
-              <span class="rsvp-contact-role">Contact</span>
-              <span class="rsvp-contact-name">Anjima</span>
-              <a href="tel:+94716392399" class="rsvp-contact-phone">+94 (71) 639 2399</a>
-            </div>
-            <div class="rsvp-contact-card">
-              <span class="rsvp-contact-role">Contact</span>
-              <span class="rsvp-contact-name">Chavindu</span>
-              <a href="tel:+94774823853" class="rsvp-contact-phone">+94 (77) 482 3853</a>
-            </div>
-          </div>
-
-          <!-- RSVP Form -->
-          <!-- <form class="rsvp-form" (submit)="submitRsvp($event)">
-            <div class="rf-field">
-              <label class="rf-label">Full Name</label>
-              <input name="name" type="text" class="rf-input" placeholder="Your full name" required>
-            </div>
-            <div class="rf-field">
-              <label class="rf-label">Phone Number</label>
-              <input name="phone" type="tel" class="rf-input" placeholder="+94 xx xxx xxxx" required>
-            </div>
-            <div class="rf-field">
-              <label class="rf-label">Number of Guests</label>
-              <input name="guestCount" type="number" min="1" value="1" class="rf-input">
-            </div>
-            <div class="rf-field">
-              <label class="rf-label">Will You Attend?</label>
-              <select name="attending" class="rf-select" required>
-                <option value="" disabled selected>Please select</option>
-                <option value="true">Yes, I will attend ✦</option>
-                <option value="false">Regretfully unable to attend</option>
-              </select>
-            </div>
-            <div class="rf-field">
-              <label class="rf-label">Message / Comment</label>
-              <textarea name="comment" class="rf-textarea" placeholder="A warm wish, a memory, or any special note for the couple…" rows="4"></textarea>
-            </div>
-            <button type="submit" class="rf-submit">
-              <span class="rfs-inner">
-                <svg viewBox="0 0 20 20" width="14" height="14" fill="none" aria-hidden="true">
-                  <ellipse cx="10" cy="10" rx="7" ry="5" fill="rgba(44,26,8,0.3)" stroke="rgba(44,26,8,0.6)" stroke-width="0.8"/>
-                  <ellipse cx="10" cy="10" rx="7" ry="5" fill="rgba(44,26,8,0.2)" stroke="rgba(44,26,8,0.5)" stroke-width="0.8" transform="rotate(60 10 10)"/>
-                  <ellipse cx="10" cy="10" rx="7" ry="5" fill="rgba(44,26,8,0.15)" stroke="rgba(44,26,8,0.45)" stroke-width="0.8" transform="rotate(120 10 10)"/>
-                  <circle cx="10" cy="10" r="2.5" fill="rgba(44,26,8,0.6)"/>
-                </svg>
-                <span class="rfs-label">Accept Invitation</span>
-              </span>
-            </button>
-          </form> -->
-
-        </div>
-      </ng-container>
-
-      <ng-template #rsvpDone>
-        <div class="rsvp-success">
-          <div class="rs-lotus" aria-hidden="true">
-            <svg viewBox="0 0 64 64" fill="none" width="56">
-              <ellipse cx="32" cy="18" rx="7" ry="14" fill="rgba(184,148,42,0.55)" stroke="rgba(200,168,56,0.7)" stroke-width="0.8" transform="rotate(0 32 32)"/>
-              <ellipse cx="32" cy="18" rx="7" ry="14" fill="rgba(184,148,42,0.5)" stroke="rgba(200,168,56,0.65)" stroke-width="0.8" transform="rotate(45 32 32)"/>
-              <ellipse cx="32" cy="18" rx="7" ry="14" fill="rgba(184,148,42,0.45)" stroke="rgba(200,168,56,0.6)" stroke-width="0.8" transform="rotate(90 32 32)"/>
-              <ellipse cx="32" cy="18" rx="7" ry="14" fill="rgba(184,148,42,0.5)" stroke="rgba(200,168,56,0.65)" stroke-width="0.8" transform="rotate(135 32 32)"/>
-              <ellipse cx="32" cy="18" rx="7" ry="14" fill="rgba(184,148,42,0.55)" stroke="rgba(200,168,56,0.7)" stroke-width="0.8" transform="rotate(180 32 32)"/>
-              <ellipse cx="32" cy="18" rx="7" ry="14" fill="rgba(184,148,42,0.5)" stroke="rgba(200,168,56,0.65)" stroke-width="0.8" transform="rotate(225 32 32)"/>
-              <ellipse cx="32" cy="18" rx="7" ry="14" fill="rgba(184,148,42,0.45)" stroke="rgba(200,168,56,0.6)" stroke-width="0.8" transform="rotate(270 32 32)"/>
-              <ellipse cx="32" cy="18" rx="7" ry="14" fill="rgba(184,148,42,0.5)" stroke="rgba(200,168,56,0.65)" stroke-width="0.8" transform="rotate(315 32 32)"/>
-              <circle cx="32" cy="32" r="8" fill="rgba(212,184,76,0.75)" stroke="rgba(184,148,42,0.9)" stroke-width="0.8"/>
-              <circle cx="32" cy="32" r="4" fill="rgba(240,210,100,0.9)"/>
-            </svg>
-          </div>
-          <h3 class="rs-title">With Gratitude</h3>
-          <p class="rs-body">Your reply has been graciously received.<br>We are honoured to celebrate with you.</p>
-        </div>
-      </ng-template>
-    </section>
-
-    <!-- MEMORY WALL -->
-    <section class="memory-wall fade-up">
-
-      <!-- Decorative top divider -->
-      <div class="mw-divider" aria-hidden="true">
-        <div class="mwd-line"></div>
-        <svg class="mwd-lotus" viewBox="0 0 64 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <ellipse cx="32" cy="20" rx="12" ry="8" fill="rgba(184,148,42,0.35)" stroke="rgba(200,168,56,0.55)" stroke-width="0.8"/>
-          <ellipse cx="32" cy="20" rx="12" ry="8" fill="rgba(184,148,42,0.25)" stroke="rgba(200,168,56,0.45)" stroke-width="0.7" transform="rotate(60 32 20)"/>
-          <ellipse cx="32" cy="20" rx="12" ry="8" fill="rgba(184,148,42,0.20)" stroke="rgba(200,168,56,0.40)" stroke-width="0.7" transform="rotate(120 32 20)"/>
-          <circle cx="32" cy="20" r="4" fill="rgba(212,184,76,0.70)"/>
-        </svg>
-        <div class="mwd-line"></div>
-      </div>
-
-      <div class="memory-wall-inner">
-
-        <!-- Header -->
-        <div class="memory-header">
-          <p class="memory-eyebrow">
-            <span class="mwe-rule"></span>
-            Shared With Love
-            <span class="mwe-rule"></span>
-          </p>
-          <h2 class="memory-title">Memory Wall</h2>
-          <p class="memory-subtitle">
-            Leave a cherished memory or heartfelt wish<br>for the couple to treasure forever.
-          </p>
-        </div>
-
-        <!-- Upload Card -->
-        <div class="memory-upload-card">
-
-          <!-- Card inner border ornament -->
-          <div class="muc-corner muc-corner-tl" aria-hidden="true"></div>
-          <div class="muc-corner muc-corner-tr" aria-hidden="true"></div>
-          <div class="muc-corner muc-corner-bl" aria-hidden="true"></div>
-          <div class="muc-corner muc-corner-br" aria-hidden="true"></div>
-
-          <p class="muc-label">Your Name</p>
-          <input
-            class="muc-input"
-            type="text"
-            placeholder="e.g. Amara &amp; Rohan"
-            [(ngModel)]="guestName">
-
-          <p class="muc-label">Your Message</p>
-          <textarea
-            class="muc-textarea"
-            rows="4"
-            placeholder="Write a lovely memory or wish..."
-            [(ngModel)]="memoryMessage">
-          </textarea>
-
-          <div class="muc-file-row">
-            <label class="muc-file-label" for="memoryFileInput">
-              <svg viewBox="0 0 20 20" fill="none" width="16" height="16">
-                <path d="M10 3v10M6 7l4-4 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M3 14v1a2 2 0 002 2h10a2 2 0 002-2v-1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-              </svg>
-              <span>{{ memoryFileName || 'Attach a photo (optional)' }}</span>
-            </label>
-            <input
-              id="memoryFileInput"
-              type="file"
-              accept="image/*"
-              (change)="onMemoryFileChange($event)"
-              style="display:none">
-          </div>
-
-          <button
-            class="muc-btn"
-            (click)="uploadMemory()"
-            [disabled]="memoryUploading">
-            <span class="muc-btn-icon" aria-hidden="true">
-              <svg viewBox="0 0 20 20" fill="none" width="16" height="16">
-                <path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" fill="currentColor"/>
-              </svg>
-            </span>
-            {{ memoryUploading ? 'Sharing…' : 'Share Your Memory' }}
-          </button>
-
-        </div>
-
-        <!-- Gallery -->
-        <ng-container *ngIf="memories.length">
-
-          <div class="mw-gallery-header" aria-hidden="true">
-            <div class="mwgh-line"></div>
-            <span class="mwgh-label">{{ memories.length }} {{ memories.length === 1 ? 'Memory' : 'Memories' }}</span>
-            <div class="mwgh-line"></div>
-          </div>
-
-          <div class="memory-masonry">
-
-            <div
-              class="memory-card"
-              *ngFor="let memory of memories; let i = index"
-              [attr.data-index]="i">
-
-              <!-- Gold frame corners on card -->
-              <div class="mc-frame mc-frame-tl" aria-hidden="true"></div>
-              <div class="mc-frame mc-frame-tr" aria-hidden="true"></div>
-              <div class="mc-frame mc-frame-bl" aria-hidden="true"></div>
-              <div class="mc-frame mc-frame-br" aria-hidden="true"></div>
-
-              <div class="mc-photo-wrap" *ngIf="memory.imageUrl">
-                <img
-                  [src]="memory.imageUrl"
-                  alt="Memory by {{ memory.guestName }}"
-                  class="mc-photo"
-                  loading="lazy">
-                <div class="mc-photo-sheen" aria-hidden="true"></div>
-              </div>
-
-              <div class="mc-body">
-                <div class="mc-quote-mark" aria-hidden="true">"</div>
-                <p class="mc-message">{{ memory.message }}</p>
-                <div class="mc-attribution">
-                  <div class="mc-attr-rule"></div>
-                  <span class="mc-guest-name">{{ memory.guestName }}</span>
-                </div>
-              </div>
-
-            </div>
-
-          </div>
-
-        </ng-container>
-
-      </div>
-
-      <!-- Decorative bottom divider -->
-      <div class="mw-divider mw-divider-bottom" aria-hidden="true">
-        <div class="mwd-line"></div>
-        <svg class="mwd-lotus" viewBox="0 0 64 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <ellipse cx="32" cy="20" rx="12" ry="8" fill="rgba(184,148,42,0.35)" stroke="rgba(200,168,56,0.55)" stroke-width="0.8"/>
-          <ellipse cx="32" cy="20" rx="12" ry="8" fill="rgba(184,148,42,0.25)" stroke="rgba(200,168,56,0.45)" stroke-width="0.7" transform="rotate(60 32 20)"/>
-          <ellipse cx="32" cy="20" rx="12" ry="8" fill="rgba(184,148,42,0.20)" stroke="rgba(200,168,56,0.40)" stroke-width="0.7" transform="rotate(120 32 20)"/>
-          <circle cx="32" cy="20" r="4" fill="rgba(212,184,76,0.70)"/>
-        </svg>
-        <div class="mwd-line"></div>
-      </div>
-
-    </section>
-
-    <!-- ════════════════════
-         FOOTER
-         ════════════════════ -->
-    <footer class="inv-footer">
-
-      <!-- Small mandala -->
-      <div class="if-mandala-footer" aria-hidden="true">
-        <svg viewBox="0 0 100 100" fill="none" width="80">
-          <circle cx="50" cy="50" r="46" stroke="rgba(184,148,42,1)" stroke-width="0.8"/>
-          <circle cx="50" cy="50" r="38" stroke="rgba(184,148,42,0.8)" stroke-width="0.6"/>
-          <circle cx="50" cy="50" r="28" stroke="rgba(184,148,42,0.7)" stroke-width="0.5"/>
-          <ellipse cx="50" cy="6" rx="5" ry="9" fill="rgba(184,148,42,0.5)" transform="rotate(0 50 50)"/>
-          <ellipse cx="50" cy="6" rx="5" ry="9" fill="rgba(184,148,42,0.5)" transform="rotate(45 50 50)"/>
-          <ellipse cx="50" cy="6" rx="5" ry="9" fill="rgba(184,148,42,0.5)" transform="rotate(90 50 50)"/>
-          <ellipse cx="50" cy="6" rx="5" ry="9" fill="rgba(184,148,42,0.5)" transform="rotate(135 50 50)"/>
-          <ellipse cx="50" cy="6" rx="5" ry="9" fill="rgba(184,148,42,0.5)" transform="rotate(180 50 50)"/>
-          <ellipse cx="50" cy="6" rx="5" ry="9" fill="rgba(184,148,42,0.5)" transform="rotate(225 50 50)"/>
-          <ellipse cx="50" cy="6" rx="5" ry="9" fill="rgba(184,148,42,0.5)" transform="rotate(270 50 50)"/>
-          <ellipse cx="50" cy="6" rx="5" ry="9" fill="rgba(184,148,42,0.5)" transform="rotate(315 50 50)"/>
-          <circle cx="50" cy="50" r="8" fill="rgba(184,148,42,0.55)" stroke="rgba(200,168,56,0.7)" stroke-width="0.8"/>
-          <circle cx="50" cy="50" r="4" fill="rgba(212,184,76,0.8)"/>
-        </svg>
-      </div>
-
-      <h2 class="if-names">{{ event.groom }} &amp; {{ event.bride }}</h2>
-      <p class="if-date">{{ event.date | date:'d MMMM yyyy' }} · {{ event.location }}</p>
-
-      <div class="if-rule" aria-hidden="true">
-        <div class="ifr-line"></div>
-        <svg viewBox="0 0 24 18" fill="none" width="20">
-          <ellipse cx="12" cy="9" rx="8" ry="5" fill="rgba(184,148,42,0.45)" stroke="rgba(200,168,56,0.6)" stroke-width="0.8"/>
-          <ellipse cx="12" cy="9" rx="8" ry="5" fill="rgba(184,148,42,0.3)" transform="rotate(60 12 9)"/>
-          <ellipse cx="12" cy="9" rx="8" ry="5" fill="rgba(184,148,42,0.25)" transform="rotate(120 12 9)"/>
-          <circle cx="12" cy="9" r="2.5" fill="rgba(212,184,76,0.7)"/>
-        </svg>
-        <div class="ifr-line"></div>
-      </div>
-
-      <p class="if-blessing">With love &amp; blessings</p>
-      <p class="if-contact">Powered by Linkora · 070 217 4799</p>
-
-    </footer>
-
-    <!-- ════════════════════
-         LIGHTBOX
-         ════════════════════ -->
-    <div *ngIf="showLightbox"
-         class="lb-overlay"
-         (click)="closeLightbox($event)"
-         role="dialog" aria-modal="true" aria-label="Photo viewer">
-      <button class="lb-close" (click)="closeLightbox()" aria-label="Close">✕</button>
-      <div class="lb-stage" (click)="$event.stopPropagation()">
-        <img [src]="currentImage" class="lb-img" alt="Wedding photo">
-        <button class="lb-nav lb-prev" (click)="prevLightbox()" aria-label="Previous photo">‹</button>
-        <button class="lb-nav lb-next" (click)="nextLightbox()" aria-label="Next photo">›</button>
-      </div>
-      <div class="lb-counter" aria-live="polite">{{ currentIndex + 1 }} / {{ event.gallery?.length }}</div>
-    </div>
-
-  </div><!-- end invitation-reveal -->
-
-</ng-container>
+  <script src="event.component.ts"></script>
+</body>
+</html>
