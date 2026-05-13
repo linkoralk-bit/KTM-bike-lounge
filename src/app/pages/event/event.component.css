@@ -150,15 +150,38 @@
    ENTRY SCENE — OBSIDIAN INVITATION CARD
    ════════════════════════════════════════════════════════ */
 .scroll-scene {
-  position: relative;
-  min-height: 100vh;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
   padding: 60px 20px;
+
   background:
-    radial-gradient(ellipse at 50% 30%, var(--onyx-2) 0%, var(--noir) 75%);
+    radial-gradient(
+      ellipse at 50% 30%,
+      var(--onyx-2) 0%,
+      var(--noir) 75%
+    );
+
   overflow: hidden;
+
+  transition:
+    opacity 0.8s ease,
+    visibility 0.8s ease;
 }
+
+.scroll-scene.hidden-scene {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+
 
 .ss-ambient { position: absolute; inset: 0; pointer-events: none; }
 .ss-glow {
@@ -420,14 +443,28 @@
    INVITATION REVEAL
    ════════════════════════════════════════════════════════ */
 .invitation-reveal {
-  display: none;
   position: relative;
+  z-index: 1;
+
+  min-height: 100dvh;
+
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+
+  overflow-x: hidden;
+
   background: var(--noir);
-  min-height: 100vh;
+
+  transition:
+    opacity 0.8s ease,
+    visibility 0.8s ease;
 }
+
 .invitation-reveal.revealed {
-  display: block;
-  animation: revealUp 1.2s cubic-bezier(.2,.8,.2,1) both;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
 }
 @keyframes revealUp {
   from { opacity: 0; transform: translateY(20px); }
@@ -1538,22 +1575,34 @@
 
 html,
 body {
-  overflow-x: hidden;
-  overscroll-behavior-y: auto;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+
+  touch-action: pan-y;
+
   -webkit-overflow-scrolling: touch;
 }
 
-.invitation-reveal {
-  position: relative;
-  z-index: 5;
-  overflow-x: hidden;
-  overflow-y: auto;
-  touch-action: pan-y;
+.bg-stage,
+.petal-layer,
+.burn-overlay,
+.ss-ambient {
+  pointer-events: none !important;
 }
 
-.scroll-scene {
+.scroll-wrap {
   touch-action: manipulation;
 }
+
+.hero,
+.inv-card,
+.scroll-body,
+.invitation-reveal {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+
 
 /* VERY IMPORTANT */
 .bg-stage,
@@ -1571,4 +1620,11 @@ body {
   transform: translateZ(0);
   will-change: transform;
   backface-visibility: hidden;
+}
+
+.bg-stage,
+.petal-layer,
+.burn-overlay,
+.ss-ambient {
+  pointer-events: none !important;
 }

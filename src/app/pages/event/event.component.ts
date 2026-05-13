@@ -165,64 +165,102 @@ export class EventComponent implements OnInit, OnDestroy, AfterViewInit {
     setTimeout(() => this.initScrollObserver(), 800);
   }
 
-  // ── REVEAL ANIMATION ────────────────────────────────────
-  openEnvelope(audio: HTMLAudioElement) {
-    if (!this.isPlaying) {
-      audio.play().then(() => {
-        this.isPlaying = true;
-        this.cdr.detectChanges();
-      }).catch(() => {});
-    }
-    const wrap     = document.getElementById('envelopeWrap');
-    const hint     = document.getElementById('wsHint');
-    const letterEl = document.getElementById('letterReveal');
-    const sceneEl  = document.getElementById('envelopeScene');
-    const burnEl   = document.getElementById('filmBurn');
+ openEnvelope(audio: HTMLAudioElement) {
 
-    if (!wrap || this.isOpening || wrap.classList.contains('opened-mobile')) {
-  return;
-}
+  // prevent double tap / reopen
+  if (this.isOpening) return;
 
-this.isOpening = true;
-wrap.classList.add('opened-mobile');
+  this.isOpening = true;
 
-    wrap.classList.add('scroll-opened');
-    if (hint) hint.style.opacity = '0';
-    wrap.classList.add('scroll-unrolling');
-
-    setTimeout(() => { if (burnEl) burnEl.classList.add('burning'); }, 600);
-
-    setTimeout(() => {
-      if (sceneEl) {
-        sceneEl.style.transition = 'opacity 0.4s ease';
-        sceneEl.style.opacity    = '0';
-        sceneEl.style.pointerEvents = 'none';
-      }
-      if (letterEl) {
-        letterEl.style.display = 'block';
-        letterEl.getBoundingClientRect();
-        letterEl.classList.add('revealed');
-        document.body.style.overflowY = 'auto';
-document.body.style.touchAction = 'pan-y';
-
-setTimeout(() => {
-  window.scrollTo({
-    top: 0,
-    behavior: 'smooth'
-  });
-}, 100);
-        setTimeout(() => { this.animateNames(); this.cdr.detectChanges(); }, 500);
-        setTimeout(() => this.initScrollObserver(), 1400);
-      }
-    }, 1050);
-
-    setTimeout(() => {
-      if (sceneEl)  sceneEl.style.display = 'none';
-      if (burnEl)   burnEl.classList.remove('burning');
-    }, 2000);
-
-    this.cdr.detectChanges();
+  // autoplay music
+  if (!this.isPlaying) {
+    audio.play().then(() => {
+      this.isPlaying = true;
+      this.cdr.detectChanges();
+    }).catch(() => {});
   }
+
+  const wrap     = document.getElementById('envelopeWrap');
+  const hint     = document.getElementById('wsHint');
+  const letterEl = document.getElementById('letterReveal');
+  const sceneEl  = document.getElementById('envelopeScene');
+  const burnEl   = document.getElementById('filmBurn');
+
+  if (!wrap || !letterEl || !sceneEl) {
+    this.isOpening = false;
+    return;
+  }
+
+  // prevent additional clicks
+  wrap.style.pointerEvents = 'none';
+
+  // open animation
+  wrap.classList.add('scroll-opened');
+  wrap.classList.add('scroll-unrolling');
+
+  // hide tap hint
+  if (hint) {
+    hint.style.opacity = '0';
+    hint.style.pointerEvents = 'none';
+  }
+
+  // burn transition
+  setTimeout(() => {
+    if (burnEl) {
+      burnEl.classList.add('burning');
+    }
+  }, 500);
+
+  // reveal invitation
+  setTimeout(() => {
+
+    // completely disable old scene
+    sceneEl.classList.add('hidden-scene');
+
+    // show invitation
+    letterEl.style.display = 'block';
+
+    // force reflow
+    letterEl.getBoundingClientRect();
+
+    // activate reveal
+    letterEl.classList.add('revealed');
+
+    // restore mobile scrolling
+    document.body.style.overflowY = 'auto';
+    document.body.style.touchAction = 'pan-y';
+
+    // scroll to top
+    requestAnimationFrame(() => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'instant' as ScrollBehavior
+      });
+    });
+
+    // animations
+    setTimeout(() => {
+      this.animateNames();
+      this.initScrollObserver();
+      this.cdr.detectChanges();
+    }, 300);
+
+  }, 950);
+
+  // cleanup
+  setTimeout(() => {
+
+    if (burnEl) {
+      burnEl.classList.remove('burning');
+    }
+
+    // fully remove old scene from DOM flow
+    sceneEl.style.display = 'none';
+
+  }, 1800);
+
+  this.cdr.detectChanges();
+}
 
   // ── BACKGROUND SLIDESHOW ────────────────────────────────
   startBgSlideshow() {
